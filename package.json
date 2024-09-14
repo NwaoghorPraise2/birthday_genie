@@ -2,10 +2,10 @@
   "name": "birthday_genie",
   "version": "1.0.0",
   "description": "The one stop birtday messaging and reminder app",
-  "main": " ",
+  "main": "server.js",
   "scripts": {
     "build": "rimraf dist && swc ./src -d dist",
-    "start": "node dist/src/index.js",
+    "start": "node dist/src/server.js",
     "prepare": "husky",
     "test": "node index.js"
   },
