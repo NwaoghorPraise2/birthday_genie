@@ -6,12 +6,19 @@
   "scripts": {
     "build": "rimraf dist && swc ./src -d dist",
     "start": "node dist/src/server.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "prepare": "husky",
     "test": "node index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "lint-staged": {
+    "*.ts*": [
+      "pnpm run lint:fix"
+    ]
+  },
   "devDependencies": {
     "@commitlint/cli": "^19.5.0",
     "@commitlint/config-conventional": "^19.5.0",
