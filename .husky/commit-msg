@@ -1,8 +1,8 @@
-#!/usr/bin/env sh
-# Husky Git Hook Script to enforce Commitlint rules
+# #!/usr/bin/env sh
+# # Husky Git Hook Script to enforce Commitlint rules
 
-# Load Husky environment (ensure Husky is initialized)
-. "$(dirname -- "$0")/_/husky.sh"
+# # Load Husky environment (ensure Husky is initialized)
+# . "$(dirname -- "$0")/_/husky.sh"
 
 # Run Commitlint to lint the commit message using pnpm
 # Reference Commitlint directly from node_modules

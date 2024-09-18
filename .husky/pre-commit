@@ -1,1 +1,2 @@
+pnpm eslint .
 pnpm test
