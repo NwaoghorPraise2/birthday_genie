@@ -1,5 +1,6 @@
 import express from 'express';
 import apiRouter from './router/apiRouter';
+import globalErrorHandler from './middlewares/globalErrorHandler';
 
 class App {
     public app: express.Application;
@@ -16,6 +17,9 @@ class App {
 
         //Routes
         this.app.use('/api', apiRouter);
+
+        //Global Error Handler
+        this.app.use(globalErrorHandler);
     }
 }
 

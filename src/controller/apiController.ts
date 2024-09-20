@@ -1,15 +1,13 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
+import httpResponse from '../utils/httpResponse';
+import responseMessage from '../constant/responseMessage';
+import httpError from '../utils/httpErrors';
 export default {
-    test: (_: Request, res: Response) => {
+    test: (req: Request, res: Response, next: NextFunction) => {
         try {
-            res.status(200).json({
-                message: 'Welcome to Birthday Genie'
-            });
+            httpResponse.ok(req, res, 200, responseMessage.SUCCESS, null)
         } catch (err) {
-            res.status(500).json({
-                message: 'Internal Server Error',
-                error: err
-            });
+            httpError.badRequest(next, err, req, 500);
         }
     }
 }

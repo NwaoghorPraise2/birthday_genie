@@ -1,4 +1,4 @@
-// import app from './app';
+import app from './app';
 import config from './config/config';
 
 class Server {
@@ -9,28 +9,28 @@ class Server {
     }
 
     public startApp(): void {
-        // const server = app.listen(this.port);
+        const server = app.listen(this.port);
     
-        // (() => {  
-        //     try {
-        //         // console.info(`Server running on port ${this.port}`, {
-        //         //     meta: {
-        //         //         PORT: config.PORT,
-        //         //         SERVER_URL: config.SERVER_URL
-        //         //     }
-        //         // });
-        //     } catch (error) {
-        //         // console.error(`Failed to log server metadata:`, { meta: error });
+        (() => {  
+            try {
+                console.info(`Server running on port ${this.port}`, {
+                    meta: {
+                        PORT: config.PORT,
+                        SERVER_URL: config.SERVER_URL
+                    }
+                });
+            } catch (error) {
+                console.error(`Failed to log server metadata:`, { meta: error });
 
-        //         server.close((error) => {
-        //             if (error) {
-        //             // console.error('Server closed due to logging failure');
-        //             }
+                server.close((error) => {
+                    if (error) {
+                    console.error('Server closed due to logging failure');
+                    }
 
-        //             process.exit(1);
-        //         })
-        //     }
-        // })();
+                    process.exit(1);
+                })
+            }
+        })();
     }
     
 }
