@@ -1,5 +1,6 @@
 import app from './app';
 import config from './config/config';
+import logger from './utils/logger';
 
 class Server {
     private port: number;
@@ -13,18 +14,18 @@ class Server {
     
         (() => {  
             try {
-                console.info(`Server running on port ${this.port}`, {
+                logger.info(`SERVER RUNNING ON ${this.port}`, {
                     meta: {
                         PORT: config.PORT,
                         SERVER_URL: config.SERVER_URL
                     }
                 });
             } catch (error) {
-                console.error(`Failed to log server metadata:`, { meta: error });
+                logger.error(`Failed to log server metadata:`, { meta: error });
 
                 server.close((error) => {
                     if (error) {
-                    console.error('Server closed due to logging failure');
+                    logger.error('Server closed due to logging failure');
                     }
 
                     process.exit(1);

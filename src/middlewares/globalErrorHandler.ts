@@ -1,13 +1,14 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextFunction, Request, Response } from 'express';
 import { ThttpError } from '../types/types';
 
+
+
 class GlobalError {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public globalErrorHandler(
         err: ThttpError,
          __: Request,
         res: Response,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         _:NextFunction
     ):void {
         res.status(err.statusCode).json(err);

@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { ThttpResponse } from '../types/types';
 import { ApplicationENV } from '../constant/application';
 import config from '../config/config';
+import logger from './logger';
 
 class HttpResponses {
     public ok(
@@ -24,7 +25,7 @@ class HttpResponses {
         };
 
         // Log the response for debugging
-        console.info(`controller responses`, {
+        logger.info(`controller responses`, {
             meta: response
         });
 

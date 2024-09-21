@@ -3,6 +3,7 @@ import { ApplicationENV } from '../constant/application';
 import responseMessage from '../constant/responseMessage';
 import { ThttpError } from '../types/types';
 import { Request } from 'express';
+import logger from './logger';
 
 
 class ErrorObject {
@@ -26,7 +27,7 @@ class ErrorObject {
         };
 
         //log
-        console.info(`Controller Error`, {
+        logger.info(`Controller Error`, {
             meta: errorObj,
         })
 

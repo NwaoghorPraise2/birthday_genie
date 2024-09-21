@@ -1,6 +1,8 @@
-import express from 'express';
+import express, { NextFunction, Response, Request } from 'express';
 import apiRouter from './router/apiRouter';
 import globalErrorHandler from './middlewares/globalErrorHandler';
+import httpErrors from './utils/httpErrors';
+import responseMessage from './constant/responseMessage';
 
 class App {
     public app: express.Application;
@@ -17,6 +19,15 @@ class App {
 
         //Routes
         this.app.use('/api', apiRouter);
+
+        //4o4 Handler
+        this.app.use('*', (req:Request, res:Response, next: NextFunction) => {
+            try{
+                throw new Error(responseMessage.NOT_FOUND('route'));
+            }catch(err){
+                httpErrors.badRequest(next, err, req, 404);
+            }
+        })
 
         //Global Error Handler
         this.app.use(globalErrorHandler);
