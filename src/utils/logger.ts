@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 
 import { createLogger, format, transports } from 'winston';
+import 'winston-mongodb';
 import { ConsoleTransportInstance, FileTransportInstance } from 'winston/lib/winston/transports';
 import util from 'util';
 import config from '../config/config';
@@ -9,6 +10,7 @@ import { ApplicationENV } from '../constant/application';
 import path from 'path';
 import * as sourceMapSupport from 'source-map-support';
 import { red, blue, yellow, green, magenta } from 'colorette';
+import { MongoDBTransportInstance } from 'winston-mongodb';
 
 // Enable source map support for better stack traces in error logging
 sourceMapSupport.install();
@@ -114,6 +116,22 @@ class Logger {
         ];
     };
 
+    //Mongodb transport for storing logs in mongodb
+    private mongoTransport = (): Array<MongoDBTransportInstance> => {
+        return [
+            new transports.MongoDB({
+                db: config.DATABASE_URL as string,
+                level: 'info',
+                metaKey: 'meta',
+                expireAfterSeconds: 3600 * 24 * 30,
+                collection: 'app_logs',
+                options: {
+                    useUnifiedTopology: true,
+                }
+            }),
+        ];
+    };
+
     // Create and configure the logger instance
     public logger = createLogger({
         defaultMeta: {
@@ -122,6 +140,7 @@ class Logger {
         transports: [
             ...this.consoleTransport(),
             ...this.fileTransport(),
+            ...this.mongoTransport(),
         ],
     });
 }
