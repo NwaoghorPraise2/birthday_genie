@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
 // Import essential modules for application functionality
 import app from './app';
 import config from './config/config';
 import logger from './utils/logger';
+import mongoDBConnector from './services/databaseService';
 
 /**
  * Server class to handle the application server initialization and startup
@@ -27,8 +29,16 @@ class Server {
     public startApp(): void {
         const server = app.listen(this.port);  // Start the server on the specified port
         
-        (() => {
+        (async () => {
             try {
+                //Database Connection
+                await mongoDBConnector.connect();
+                logger.info('Database Connected', {
+                    meta: {
+                        name: 'MongoDB'
+                    }
+                });
+
                 // Log server startup details
                 logger.info(`SERVER RUNNING ON ${this.port}`, {
                     meta: {

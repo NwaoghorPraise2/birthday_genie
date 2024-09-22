@@ -18,6 +18,8 @@ export default tseslint.config({
   ],
   rules: {
     "no-console": "error",
+    "no-useless-catch":0,
+    "@typescript-eslint/no-unsafe-call": 0,
     quotes: ["error", "single", {allowTemplateLiterals: true}],
   },
 }); 
