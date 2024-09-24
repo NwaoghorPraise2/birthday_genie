@@ -32,10 +32,10 @@ class Server {
         (async () => {
             try {
                 //Database Connection
-                await mongoDBConnector.connect();
+                const connection = await mongoDBConnector.connect();
                 logger.info('Database Connected', {
                     meta: {
-                        name: 'MongoDB'
+                        name: connection?.name
                     }
                 });
 

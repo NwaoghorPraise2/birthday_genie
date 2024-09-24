@@ -1,29 +1,25 @@
  
  
  
-import { MongoClient } from 'mongodb';
+import mongoose from 'mongoose';
 import config from '../config/config';
 
 class MongoDBConnector {
   private uri: string;
-  private client: MongoClient;
   private connected: boolean = false;
 
   constructor(connectionString: string) {
     this.uri = connectionString;
-    this.client = new MongoClient(this.uri, {
-      serverSelectionTimeoutMS: 10000, // 10 seconds timeout for server selection
-    });
   }
 
-  public async connect(): Promise<void> {
+  public async connect() {
     if (this.connected) {
       return;
     }
     try {
-       
-      await this.client.connect();
+      await mongoose.connect(this.uri);
       this.connected = true;
+      return mongoose.connection;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw error;
@@ -37,8 +33,7 @@ class MongoDBConnector {
       return;
     }
     try {
-       
-      await this.client.close();
+      await mongoose.disconnect();
       this.connected = false;
     } catch (error: unknown) {
       if (error instanceof Error) {
