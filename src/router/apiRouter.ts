@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import apiController from '../controller/apiController';
+import rateLimit from '../middlewares/rateLimit';
 
 /**
  * AppRouter Class - Manages and defines the routes for the application.
@@ -27,6 +28,7 @@ class AppRouter {
      * - The route is linked to the test method in the apiController.
      */
     public test(): void {
+        this.router.use(rateLimit);
         this.router.get('/test', apiController.test);
         this.router.get('/health', apiController.health);
     }
