@@ -3,6 +3,7 @@ import apiRouter from './router/apiRouter';
 import globalErrorHandler from './middlewares/globalErrorHandler';
 import httpErrors from './utils/httpErrors';
 import responseMessage from './constant/responseMessage';
+import helmet from 'helmet';
 
 /**
  * The App class configures and initializes the Express application.
@@ -28,6 +29,7 @@ class App {
 
     private config(): void {
         // Middleware to handle JSON and URL-encoded data parsing
+        this.app.use(helmet());
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: true }));
 

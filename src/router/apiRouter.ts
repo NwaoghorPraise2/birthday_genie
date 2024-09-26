@@ -28,6 +28,7 @@ class AppRouter {
      */
     public test(): void {
         this.router.get('/test', apiController.test);
+        this.router.get('/health', apiController.health);
     }
 }
 
