@@ -1,0 +1,11 @@
+services:
+  api:
+    build: .
+    ports:
+      - ${PORT}:${PORT}
+      - ${DEBUG_PORT}:${DEBUG_PORT} #debug
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/.pnpm-store
+      - /usr/src/app/node_modules
+    command: pnpm start:docker

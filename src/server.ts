@@ -29,7 +29,7 @@ class Server {
     }
 
     public startApp(): void {
-        const server = app.listen(this.port);  // Start the server on the specified port
+        const server = app.listen(this.port, '0.0.0.0');  // Start the server on the specified port
         
         (async () => {
             try {
