@@ -3,9 +3,9 @@
 import app from './app';
 import config from './config/config';
 import logger from './utils/logger';
-import mongoDBConnector from './services/databaseService';
-import rateLimiter from './config/rate-limiter';
-import { Connection } from 'mongoose';
+// import mongoDBConnector from './services/databaseService';
+// import rateLimiter from './config/rate-limiter';
+// import { Connection } from 'mongoose';
 
 /**
  * Server class to handle the application server initialization and startup
@@ -31,19 +31,12 @@ class Server {
     public startApp(): void {
         const server = app.listen(this.port, '0.0.0.0');  // Start the server on the specified port
         
-        (async () => {
+        (() => {
             try {
-                //Database Connection
-                const connection = await mongoDBConnector.connect();
-                logger.info('DATABASE CONNECTION', {
-                    meta: {
-                        name: connection?.name
-                    }
-                });
 
                 //InitialRateLimiiter
-                rateLimiter.initRatelimiter(connection as Connection);
-                logger.info(`RATE LIMITER INITIALED`);
+                // rateLimiter.initRatelimiter(connection as Connection);
+                // logger.info(`RATE LIMITER INITIALED`);
 
 
                 // Log server startup details

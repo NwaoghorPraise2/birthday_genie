@@ -1,0 +1,56 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES_URL")
+}
+
+model User {
+  id String @id @default(nanoid(16))
+  username String?
+  name String?
+  email String?
+  phoneNumber String?
+  password String
+  profilePic String?
+  refreshToken String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  isVerified Boolean? @default(false)
+  isBlocked Boolean? @default(false)
+  resetPasswordToken String?
+	resetPasswordTokenExpiresAt DateTime?
+  verificationToken String?
+	verificationTokenExpiresAt DateTime?
+  lastLogin DateTime @default(now())
+  friends Friends[]
+  role Roles @default(USER)
+  @@map("users")
+  @@index([createdAt])
+}
+
+enum Roles {
+  USER
+  ADMIN
+}
+
+model Friends {
+    id String @id @default(nanoid(16))
+    name String
+    preferedName String
+    phoneNumber String?
+    whatsappNumber String?
+    email String?
+    relationship String?
+    description String?
+    createdAt   DateTime @default(now()) @map("created_at")
+    updatedAt   DateTime @updatedAt @map("updated_at")
+
+    //RELATIONSHIP BETWEEN USER AND FRIENDS
+    user User @relation(fields: [userId], references: [id])
+    userId String
+
+    @@map("friends")
+}

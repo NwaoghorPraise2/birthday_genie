@@ -1,4 +1,23 @@
 services:
+  postgres:
+    image: postgres:16-alpine3.20
+    ports:
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    depends_on:
+      - pg-admin
+
+  pg-admin:
+    image: dpage/pgadmin4:8
+    environment: 
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - ${PGADMIN_LISTEN_PORT}:${PGPORT}
+
   api:
     build: .
     ports:
@@ -9,3 +28,8 @@ services:
       - /usr/src/app/.pnpm-store
       - /usr/src/app/node_modules
     command: pnpm start:docker
+    depends_on: 
+      - postgres
+    environment:
+      POSTGRES_URL: ${POSTGRES_URL}
+      PORT: ${PORT}
