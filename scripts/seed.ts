@@ -1,18 +1,22 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import db from '../src/config/db';
 import logger from '../src/utils/logger';
+import PasswordHelpers from '../src/utils/hash';
 
 
 class SeedDB {
     async seedData():Promise<void> {
+        const count = await db.user.count() as number;
+        if(count > 0)
+                await db.user.deleteMany();
+
         for(let i = 0; i < 10; i++){
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             await db.user.create
             ({
                 data: {
                     username:`user-name-${i}`,
-                    name: `user-${i}@genie.com`,
-                    email: `user-pass${i}`,
-                    password: 'XXXXXXXX'
+                    email: `user-${i}@genie.com`,
+                    password: await PasswordHelpers.hashPassword(`user-pass${i}`)
                 }
             }) 
         }

@@ -37,7 +37,6 @@ class App {
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: true }));
 
-        // Register API routes
         this.app.use('/api', apiRouter);
 
         // Handle unmatched routes (404)

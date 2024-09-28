@@ -6,17 +6,14 @@
   "scripts": {
     "build": "rimraf dist && swc ./src -d dist",
     "start": "node dist/src/server.js",
-    "start:prod": "pnpm build &&  NODE_ENV=production  node --env-file=.env dist/src/server.js",
-    "start:docker": "pnpm build && node --env-file=.env --inspect=0.0.0.0 dist/src/server.js",
+    "start:prod": "pnpm build && NODE_ENV=production node dist/src/server.js",
+    "start:docker": "pnpm build && nodemon --watch ./src --exec 'node --env-file=.env --inspect=0.0.0.0 dist/src/server.js'",
+    "start:docker@prod": "pnpm build && cross-env NODE_ENV=production node dist/src/server.js",
     "rebuild:api": "docker compose build api && docker compose rm --force --stop api && docker compose up -d api",
     "db:migrate": "pnpx prisma migrate dev --name init",
-		"docker:db:migrate": "docker compose run api pnpm db:migrate",
+    "docker:db:migrate": "docker compose run api pnpm db:migrate",
     "db:console": "docker compose run postgres psql -h postgres -U Admin -d birthday_genie",
     "seed:db:dev": "docker compose run api pnpm ts-node scripts/seed.ts",
-
-
-
-    "start:docker@prod": " pnpm build && cross-env NODE_ENV=production node dist/src/server.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format:check": "prettier . --check",
@@ -29,7 +26,6 @@
   "license": "ISC",
   "lint-staged": {
     "*.ts*": [
-      "pnpm run lint:fix",
       "pnpm run format:fix",
       "pnpm run test"
     ]
@@ -41,6 +37,7 @@
     "@swc/cli": "0.4.1-nightly.20240914",
     "@swc/core": "^1.7.28",
     "@tsconfig/node20": "^20.1.4",
+    "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
     "@types/node": "^22.7.2",
@@ -62,6 +59,7 @@
   },
   "dependencies": {
     "@prisma/client": "^5.20.0",
+    "bcrypt": "^5.1.1",
     "colorette": "^2.0.20",
     "config@latest": "link:eslint/config@latest",
     "cors": "^2.8.5",

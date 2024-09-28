@@ -8,4 +8,7 @@ export default {
 
     // Database
     DATABASE_URL: process.env.DATABASE_URL,
+
+    //HASH
+    HASH_SALT: process.env.HASH_SALT,
 };
