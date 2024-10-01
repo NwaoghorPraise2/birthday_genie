@@ -7,7 +7,7 @@ export default {
     SERVER_URL: process.env.SERVER_URL,
 
     // Database
-    DATABASE_URL: process.env.DATABASE_URL,
+    POSTGRES_URL: process.env.POSTGRES_URL,
 
     //HASH
     HASH_SALT: process.env.HASH_SALT,

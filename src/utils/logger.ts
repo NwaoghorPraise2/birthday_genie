@@ -2,7 +2,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 
 import { createLogger, format, transports } from 'winston';
-import 'winston-mongodb';
 import { ConsoleTransportInstance, FileTransportInstance } from 'winston/lib/winston/transports';
 import util from 'util';
 import config from '../config/config';
@@ -116,6 +115,8 @@ class Logger {
         ];
     };
 
+
+    // Postgres transport for storing logs in PostgresQL
     //Mongodb transport for storing logs in mongodb
     // private mongoTransport = (): Array<MongoDBTransportInstance> => {
     //     return [
@@ -139,7 +140,7 @@ class Logger {
         },
         transports: [
             ...this.consoleTransport(),
-            ...this.fileTransport(),
+            ...this.fileTransport()
         ],
     });
 }

@@ -12,7 +12,7 @@ export type ThttpResponse = {
 }
 
 // Type definition for a standard HTTP error object
-export type ThttpError = {
+export interface ThttpError extends Error {
     success: boolean,  // Indicates whether the request was successful (false in the case of an error)
     statusCode: number,  // HTTP status code (e.g., 400, 500)
     request: {

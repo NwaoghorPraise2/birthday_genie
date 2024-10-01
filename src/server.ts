@@ -1,11 +1,6 @@
-/* eslint-disable @typescript-eslint/no-floating-promises */
-// Import essential modules for application functionality
 import app from './app';
 import config from './config/config';
 import logger from './utils/logger';
-// import mongoDBConnector from './services/databaseService';
-// import rateLimiter from './config/rate-limiter';
-// import { Connection } from 'mongoose';
 
 /**
  * Server class to handle the application server initialization and startup
@@ -24,22 +19,13 @@ class Server {
     private port: number;
 
     constructor() {
-        // Assign the server port from config or default to 3000 if undefined
         this.port = Number(config.PORT) || 3000;
     }
 
     public startApp(): void {
-        const server = app.listen(this.port, '0.0.0.0');  // Start the server on the specified port
-        
+        const server = app.listen(this.port, '0.0.0.0');  
         (() => {
             try {
-
-                //InitialRateLimiiter
-                // rateLimiter.initRatelimiter(connection as Connection);
-                // logger.info(`RATE LIMITER INITIALED`);
-
-
-                // Log server startup details
                 logger.info(`SERVER RUNNING ON ${this.port}`, {
                     meta: {
                         PORT: config.PORT,
@@ -47,10 +33,8 @@ class Server {
                     }
                 });
             } catch (error) {
-                // Log error if logger fails and shut down the server gracefully
                 logger.error('Failed to log server metadata:', { meta: error });
 
-                // Safely close the server and exit the process with error code
                 server.close((error) => {
                     if (error) {
                         logger.error('Server closed due to logging failure');
@@ -62,6 +46,5 @@ class Server {
     }
 }
 
-// Instantiate and start the server
 const server = new Server();
 server.startApp();

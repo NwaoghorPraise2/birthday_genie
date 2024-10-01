@@ -47,9 +47,6 @@ dependencies:
   winston:
     specifier: ^3.14.2
     version: 3.14.2
-  winston-mongodb:
-    specifier: ^6.0.0
-    version: 6.0.0(winston@3.14.2)
 
 devDependencies:
   '@commitlint/cli':
@@ -4843,25 +4840,6 @@ packages:
     resolution: {integrity: sha512-eDMORYaPNZ4sQIuuYPDHdQvf4gyCF9rEEV/yPxGfwPkRodwEgiMUUXTx/dex+Me0wxx53S+NgUHaP7y3MGlDmg==}
     dependencies:
       string-width: 4.2.3
-    dev: false
-
-  /winston-mongodb@6.0.0(winston@3.14.2):
-    resolution: {integrity: sha512-/H7hrGjOVv6rlxJX/BzIrh7LscS9TetAidqx6A9JWJIDSafhSXfuJGkgUJftWVOX0h5hnUoOTqps2XffMhWFcw==}
-    engines: {node: '>=14.20.1'}
-    peerDependencies:
-      winston: ^3.0.0
-    dependencies:
-      mongodb: 6.8.0
-      winston: 3.14.2
-      winston-transport: 4.7.1
-    transitivePeerDependencies:
-      - '@aws-sdk/credential-providers'
-      - '@mongodb-js/zstd'
-      - gcp-metadata
-      - kerberos
-      - mongodb-client-encryption
-      - snappy
-      - socks
     dev: false
 
   /winston-transport@4.7.1:

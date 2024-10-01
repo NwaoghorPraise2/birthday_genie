@@ -1,6 +1,5 @@
 import { Router } from 'express';
-import apiController from '../controller/apiController';
-import authRoutes from './authRoutes';
+import { AuthController } from '../controller/authController';
 
 /**
  * AppRouter Class - Manages and defines the routes for the application.
@@ -13,26 +12,17 @@ import authRoutes from './authRoutes';
  * - Scalability: The current setup allows easy expansion of routes by adding more methods in the class.
  * - Separation of Concerns: Routing logic is kept separate from the controller logic, following the single responsibility principle.
  */
-class AppRouter {
+class AuthRouter {
     public router: Router;
 
     constructor() {
-        this.router = Router(); // Initializes a new Router instance
-        this.test(); // Defines the /test route during initialization
+        this.router = Router(); 
+        this.test();
     }
-
-    /**
-     * Defines the /test route and assigns it to the test method in apiController.
-     * 
-     * - HTTP GET /test
-     * - The route is linked to the test method in the apiController.
-     */
     public test(): void {
-        this.router.get('/test', apiController.test);
-        this.router.get('/health', apiController.health);
-        this.router.use('/auth', authRoutes);
+        this.router.post('/register', AuthController.register);
     }
 }
 
 // Export the router instance directly
-export default new AppRouter().router;
+export default new AuthRouter().router;

@@ -1,10 +1,10 @@
 import express, { NextFunction, Response, Request } from 'express';
 import apiRouter from './router/apiRouter';
-import globalErrorHandler from './middlewares/globalErrorHandler';
-import httpErrors from './utils/httpErrors';
+import globalErrorHandler from './middlewares/handleGlobalErrors';
 import responseMessage from './constant/responseMessage';
 import helmet from 'helmet';
 import cors from 'cors';
+import GlobalError from './utils/HttpsErrors';
 /**
  * The App class configures and initializes the Express application.
  * 
@@ -41,17 +41,11 @@ class App {
 
         // Handle unmatched routes (404)
         this.app.use('*', (req: Request, res: Response, next: NextFunction) => {
-            try {
-                // Throw a 404 error with a custom response message
-                throw new Error(responseMessage.NOT_FOUND('route'));
-            } catch (err) {
-                // Call the custom HTTP error handler
-                httpErrors.badRequest(next, err, req, 404);
-            }
+                return next(new GlobalError(404, responseMessage.NOT_FOUND('Route')))
         });
 
         // Global error handler for handling all application-level errors
-        this.app.use(globalErrorHandler);
+        this.app.use(globalErrorHandler.errorHandler);
     }
 }
 
