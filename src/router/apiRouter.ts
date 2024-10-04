@@ -17,19 +17,54 @@ class AppRouter {
     public router: Router;
 
     constructor() {
-        this.router = Router(); // Initializes a new Router instance
-        this.test(); // Defines the /test route during initialization
+        this.router = Router();
+        this.test();
     }
 
-    /**
-     * Defines the /test route and assigns it to the test method in apiController.
-     * 
-     * - HTTP GET /test
-     * - The route is linked to the test method in the apiController.
-     */
     public test(): void {
+        /**
+         * @swagger
+         * /api/test:
+         *   get:
+         *     summary: Returns a test message to verify the application is running.
+         *     tags:
+         *       - Test Routes
+         *     responses:
+         *       200:
+         *         description: Successfully returns a test message.
+         *         content:
+         *           application/json:
+         *             schema:
+         *               type: object
+         *               properties:
+         *                 message:
+         *                   type: string
+         *                   example: "Test successful!"
+         */
         this.router.get('/test', apiController.test);
+
+        /** 
+         * @swagger
+         * /api/health:
+         *   get:
+         *     summary: Returns the health status of the application.
+         *     tags:
+         *       - Health Routes
+         *     responses:
+         *       200:
+         *         description: Successfully returns the application's health status.
+         *         content:
+         *           application/json:
+         *             schema:
+         *               type: object
+         *               properties:
+         *                 status:
+         *                   type: string
+         *                   example: "Healthy"
+         */
         this.router.get('/health', apiController.health);
+
+        // Auth routes are separated in another module
         this.router.use('/auth', authRoutes);
     }
 }

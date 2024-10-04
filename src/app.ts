@@ -5,6 +5,8 @@ import responseMessage from './constant/responseMessage';
 import helmet from 'helmet';
 import cors from 'cors';
 import GlobalError from './utils/HttpsErrors';
+import SwaggerDocs from './utils/swagger';
+
 /**
  * The App class configures and initializes the Express application.
  * 
@@ -20,15 +22,13 @@ import GlobalError from './utils/HttpsErrors';
  *   middleware (like helmet, CORS) and validation logic at a central point.
  */
 class App {
-    public app: express.Application;
+    public app = express();
 
     constructor() {
-        this.app = express();
         this.config();
     }
 
     private config(): void {
-        // Middleware to handle JSON and URL-encoded data parsing
         this.app.use(cors({
             methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
             credentials: true,
@@ -38,6 +38,8 @@ class App {
         this.app.use(express.urlencoded({ extended: true }));
 
         this.app.use('/api', apiRouter);
+
+        new SwaggerDocs(this.app);
 
         // Handle unmatched routes (404)
         this.app.use('*', (req: Request, res: Response, next: NextFunction) => {

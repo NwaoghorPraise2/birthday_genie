@@ -1,2 +1,4 @@
 To... Solve Eslint issue
-Solve productio logger
+setup test 
+setup swagger
+set a default profile pic for all.

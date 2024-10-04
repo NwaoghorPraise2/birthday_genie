@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 
@@ -13,11 +15,18 @@ export class AuthRepository {
         })
     }
 
+    private static userWithoutPassword(response: any){
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const {password, ...userWithoutPassword} = response;
+        return userWithoutPassword;
+    }
+
     public static async createUser(user: IUser){
-       return await db.user.create({
+       const createduser: Promise<IUser> = await db.user.create({
             data:{
                 ...user,
             }
        })
+       return this.userWithoutPassword(createduser);
     }
 }

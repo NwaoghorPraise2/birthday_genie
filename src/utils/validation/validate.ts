@@ -1,0 +1,15 @@
+import * as z from 'zod';
+
+const toSentenceCase = (str: string) => {
+    if (!str) return str;
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+};
+
+export const User = z.object({
+    username: z.string().trim().transform(toSentenceCase),
+    password: z.string().min(8).trim(),
+    email: z.string().email().trim().toLowerCase(),
+    name: z.string().trim().transform(toSentenceCase).optional(),
+    phoneNumber: z.string().trim().optional(),
+    profilePic: z.string().trim().optional(),
+})
