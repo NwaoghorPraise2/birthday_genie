@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
-
 import db from '../config/db';
 import { IUser } from '../types/auth.types';
 
@@ -16,7 +16,6 @@ export class AuthRepository {
     }
 
     private static userWithoutPassword(response: any){
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const {password, ...userWithoutPassword} = response;
         return userWithoutPassword;
     }

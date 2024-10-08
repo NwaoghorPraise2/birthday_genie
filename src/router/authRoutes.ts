@@ -27,26 +27,136 @@ class AuthRouter {
      * @swagger
      * /api/auth/register:
      *   post:
-     *     summary: Registers a new user.
-     *     consumes:
-     *       - multipart/form-data
+     *     summary: Registers a new user account.
+     *     description: |
+     *       This endpoint allows users to register a new account by providing required details such as `username`, `email`, and `password`. 
+     *       Optionally, users can upload a profile picture and provide other information like their name and phone number. 
+     *       The registration process also supports unique email and username validations.
+     *     tags:
+     *       - Authentication
      *     requestBody:
+     *       required: true
      *       content:
      *         multipart/form-data:
      *           schema:
      *             type: object
+     *             required:
+     *               - username
+     *               - email
+     *               - password
      *             properties:
      *               file:
      *                 type: string
      *                 format: binary
-     *                 description: The user's profile picture.
-     *               user:
-     *                 $ref: '#/components/schemas/User'
+     *                 description: Optional profile picture for the user.
+     *               username:
+     *                 type: string
+     *                 description: Unique username for the user.
+     *                 example: johndoe123
+     *               email:
+     *                 type: string
+     *                 format: email
+     *                 description: Unique email address of the user.
+     *                 example: johndoe@example.com
+     *               password:
+     *                 type: string
+     *                 format: password
+     *                 description: Secure password for the user account.
+     *                 example: Passw0rd!
+     *               name:
+     *                 type: string
+     *                 description: Full name of the user.
+     *                 example: John Doe
+     *               phoneNumber:
+     *                 type: string
+     *                 description: Optional phone number for the user.
+     *                 example: +1234567890
      *     responses:
      *       201:
      *         description: User successfully registered.
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 success:
+     *                   type: boolean
+     *                   description: Indicates whether the registration was successful.
+     *                   example: true
+     *                 message:
+     *                   type: string
+     *                   description: Success message.
+     *                   example: "User successfully registered."
+     *                 data:
+     *                   $ref: '#/components/schemas/User'
      *       400:
      *         description: Validation error.
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 success:
+     *                   type: boolean
+     *                   description: Indicates if the registration failed due to validation issues.
+     *                   example: false
+     *                 message:
+     *                   type: string
+     *                   description: Error message describing the validation issue.
+     *                   example: "Email is already in use."
+     *       500:
+     *         description: Internal server error.
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 success:
+     *                   type: boolean
+     *                   description: Indicates whether the request was processed successfully.
+     *                   example: false
+     *                 message:
+     *                   type: string
+     *                   description: Error message detailing the internal server error.
+     *                   example: "An unexpected error occurred."
+     *     security:
+     *       - bearerAuth: []
+     *     components:
+     *       schemas:
+     *         User:
+     *           type: object
+     *           properties:
+     *             id:
+     *               type: string
+     *               description: The unique identifier of the user.
+     *               example: "cklv44gk00b8ph9fl0j5f1e5s"
+     *             username:
+     *               type: string
+     *               description: The username of the user.
+     *               example: johndoe123
+     *             email:
+     *               type: string
+     *               format: email
+     *               description: The email address of the user.
+     *               example: johndoe@example.com
+     *             phoneNumber:
+     *               type: string
+     *               description: The phone number of the user.
+     *               example: +1234567890
+     *             profilePic:
+     *               type: string
+     *               description: URL of the user's profile picture.
+     *               example: "https://example.com/profile/johndoe123.jpg"
+     *             createdAt:
+     *               type: string
+     *               format: date-time
+     *               description: The date and time when the user was created.
+     *               example: "2024-10-05T12:34:56.789Z"
+     *             updatedAt:
+     *               type: string
+     *               format: date-time
+     *               description: The date and time when the user was last updated.
+     *               example: "2024-10-05T12:34:56.789Z"
      */
     public run(): void {
         this.router.post('/register', 

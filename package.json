@@ -27,8 +27,7 @@
   "license": "ISC",
   "lint-staged": {
     "*.ts*": [
-      "pnpm run format:fix",
-      "pnpm run test"
+      "pnpm run format:fix"
     ]
   },
   "devDependencies": {

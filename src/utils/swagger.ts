@@ -23,7 +23,7 @@ const options: swaggerJsDoc.Options = {
             }
         },
     },
-    apis: [path.resolve(__dirname, '../src/router/*.ts')], // Use absolute path
+    apis: [path.resolve(__dirname, './src/router/*.ts')], // Use compiled JavaScript files
 };
 
 const swaggerSpec = (() => {
@@ -50,7 +50,7 @@ class SwaggerDocs {
     private swaggerDocs = () => {
         this.app.use('/docs', this.swaggerUi.serve, this.swaggerUi.setup(this.swaggerSpec));
 
-        logger.info(`Docs available at ${config.SERVER_URL}/api-docs`);
+        logger.info(`Docs available at ${config.SERVER_URL}/docs`);
 
         // JSON format
         this.app.get('/docs.json', (req: Request, res: Response) => {

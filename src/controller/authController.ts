@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import responseMessage from '../constant/responseMessage';
 import { AuthService } from '../services/authService';
 import { IUser } from '../types/auth.types';
@@ -8,7 +8,7 @@ import { NextFunction, Request, Response } from 'express';
 import asyncHandler from '../utils/asyncHandler';
 
 export class AuthController {
-    public static register = asyncHandler.handle( async(req: Request, res:Response, next:NextFunction) =>{
+    public static register = asyncHandler.handle( async(req: Request, res:Response, _next:NextFunction): Promise<void> =>{
         const data: IUser= req.body;
         data.profilePic = req.file?.path;
         const result = await AuthService.doUserRegistration(data)
