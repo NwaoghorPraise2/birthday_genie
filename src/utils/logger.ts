@@ -10,28 +10,27 @@ import path from 'path';
 import * as sourceMapSupport from 'source-map-support';
 import { red, blue, yellow, green, magenta } from 'colorette';
 
-
 // Enable source map support for better stack traces in error logging
 sourceMapSupport.install();
 
 /**
- * Logger Class - Sets up and configures a Winston logger instance
+ * Logger class sets up and configures a Winston logger instance.
  * 
- * - Console Transport: In development, logs are colored and printed to the console with additional metadata.
- * - File Transport: Logs are written to a file in JSON format for structured logging, allowing easy parsing in production environments.
- * - Colorization: Levels (e.g., ERROR, WARN, INFO) are colorized for better readability in the console.
- * - Meta Handling: Supports inspecting objects in-depth and serializing errors with full stack traces when necessary.
- * - Source Map Support: Added for better debugging (especially for TypeScript stack traces).
+ * - Development Logging: In development mode, logs are colorized and output to the console for readability.
+ * - Production Logging: Logs are written to a file in JSON format, making them easy to parse and manage in production.
+ * - Log Customization: Log levels (INFO, WARN, ERROR) are colorized for console output, and errors are serialized with full stack traces.
+ * - Source Map Support: Improves debugging by enabling better TypeScript stack traces in log output.
  * 
  * Key Considerations:
- * - Separation of concerns between console and file transports depending on environment.
- * - Console logs are highly readable, leveraging colors and inspecting metadata deeply.
- * - File logs use structured JSON to enable easy parsing in log management systems (e.g., Elasticsearch, Loggly).
- * - The configuration is flexible enough to scale with production needs, where file logging is essential for persistent storage.
+ * - Multi-Environment Support: Differentiates between development and production logging strategies.
+ * - Structured Logging: File logs use structured JSON for easier analysis in log management systems.
+ * - Extensibility: The logger can be extended to support additional transports (e.g., databases) for long-term storage or analysis.
  */
 class Logger {
 
-    // Method to colorize the log level in console output
+    /**
+     * Method to colorize log levels for console output.
+     */
     private colorizeLevel(level: string): string {
         switch (level) {
             case 'ERROR':
@@ -45,7 +44,9 @@ class Logger {
         }
     }
 
-    // Custom log format for console output, includes colorized level, timestamp, and inspected metadata
+    /**
+     * Custom format for console logs, including colorized levels, timestamps, and metadata.
+     */
     private consoleLogFormat = format.printf((info) => {
         const { timestamp, level, message, meta = {} } = info;
 
@@ -56,11 +57,12 @@ class Logger {
         return `${customLevel} - [${customTimeStamp}]: ${message}\n${magenta('META - ')} ${customMeta}\n`;
     });
 
-    // Custom log format for file output, includes structured metadata, error serialization
+    /**
+     * Custom format for file logs, structured in JSON format with serialized metadata.
+     */
     private fileLogFormat = format.printf((info) => {
         const { timestamp, level, message, meta = {} } = info;
 
-        // Serialize metadata for better handling in log files
         const logMeta: Record<string, unknown> = {};
         for (const [key, value] of Object.entries(meta)) {
             if (value instanceof Error) {
@@ -84,7 +86,9 @@ class Logger {
         return JSON.stringify(logData, null, 4);
     });
 
-    // Console transport for development environment with colorized output
+    /**
+     * Console transport for development environment with colorized log output.
+     */
     private consoleTransport = (): Array<ConsoleTransportInstance> => {
         if (config.ENV === ApplicationENV.DEVELOPMENT) {
             return [
@@ -97,11 +101,12 @@ class Logger {
                 }),
             ];
         }
-
         return [];
     };
 
-    // File transport for structured log storage in all environments
+    /**
+     * File transport for structured logging in JSON format.
+     */
     private fileTransport = (): Array<FileTransportInstance> => {
         return [
             new transports.File({
@@ -115,32 +120,16 @@ class Logger {
         ];
     };
 
-
-    // Postgres transport for storing logs in PostgresQL
-    //Mongodb transport for storing logs in mongodb
-    // private mongoTransport = (): Array<MongoDBTransportInstance> => {
-    //     return [
-    //         new transports.MongoDB({
-    //             db: config.DATABASE_URL as string,
-    //             level: 'info',
-    //             metaKey: 'meta',
-    //             expireAfterSeconds: 3600 * 24 * 30,
-    //             collection: 'app_logs',
-    //             options: {
-    //                 useUnifiedTopology: true,
-    //             }
-    //         }),
-    //     ];
-    // };
-
-    // Create and configure the logger instance
+    /**
+     * Creates and configures the Winston logger instance.
+     */
     public logger = createLogger({
         defaultMeta: {
-            meta: {},  // Default metadata (can be extended to include app-specific metadata)
+            meta: {},  // Default metadata for logs
         },
         transports: [
             ...this.consoleTransport(),
-            ...this.fileTransport()
+            ...this.fileTransport(),
         ],
     });
 }

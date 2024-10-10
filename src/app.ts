@@ -10,16 +10,15 @@ import SwaggerDocs from './utils/swagger';
 /**
  * The App class configures and initializes the Express application.
  * 
- * - Middleware setup: Includes JSON parsing and URL encoding middleware for request payload processing.
- * - Routes: Registers an API router for all '/api' routes.
- * - 404 Handler: Catches unmatched routes and throws a 404 error with a custom message.
- * - Global Error Handler: Ensures centralized error handling across the application to handle all operational errors.
+ * - Middleware: Configures essential middleware including CORS, Helmet for security, JSON parsing, and URL encoding.
+ * - Routing: Registers API routes under '/api' and integrates Swagger for API documentation.
+ * - 404 Handling: Catches unmatched routes, throwing a custom 404 error with a structured response message.
+ * - Error Handling: Implements a centralized global error handler to manage operational errors across the app.
  * 
  * Key Considerations:
- * - Separation of Concerns: Middleware, routes, and error handling are separated for better maintainability.
- * - Custom Error Handling: The app uses a custom error handler to send standardized error responses.
- * - Security & Validation: Although not present in this snippet, this structure allows easy integration of security 
- *   middleware (like helmet, CORS) and validation logic at a central point.
+ * - Security: Uses Helmet for basic security hardening and CORS to allow cross-origin requests.
+ * - Centralized Error Management: Ensures standardized error responses across the application using a global error handler.
+ * - Swagger Integration: Automatically sets up Swagger API documentation to enhance API discoverability.
  */
 class App {
     public app = express();
@@ -32,7 +31,7 @@ class App {
         this.app.use(cors({
             methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
             credentials: true,
-        }))
+        }));
         this.app.use(helmet());
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: true }));
@@ -43,7 +42,7 @@ class App {
 
         // Handle unmatched routes (404)
         this.app.use('*', (req: Request, res: Response, next: NextFunction) => {
-                return next(new GlobalError(404, responseMessage.NOT_FOUND('Route')))
+            return next(new GlobalError(404, responseMessage.NOT_FOUND('Route')));
         });
 
         // Global error handler for handling all application-level errors

@@ -5,17 +5,17 @@ import config from '../config/config';
 import logger from './logger';
 
 /**
- * HttpResponses Class - Provides standardized methods for sending HTTP responses
+ * HttpResponses Class provides standardized methods for sending HTTP responses.
  * 
- * - Standardizes response structure across the application.
- * - Logs responses for easier debugging and monitoring.
- * - Removes sensitive information (like IP address) in production environments to enhance security.
- * - Uses default status codes and allows for customization of response messages and data.
+ * - Response Standardization: Ensures a consistent structure across all responses in the application.
+ * - Logging: Logs outgoing responses for easier debugging and monitoring of API behavior.
+ * - Security Consideration: In production environments, sensitive information such as client IP addresses are removed from responses.
+ * - Customizability: Supports default status codes while allowing customization of response messages and payloads.
  * 
  * Key Considerations:
- * - Response Consistency: Ensures all responses follow a similar structure (success, statusCode, message, data, etc.).
- * - Logging: Logs all outgoing responses to provide useful context for debugging issues.
- * - Security: Automatically removes the client's IP address in production environments to avoid logging sensitive data.
+ * - Response Consistency: All responses include fields such as success, statusCode, message, and data.
+ * - Debugging and Auditing: Logs the details of each response to aid in identifying issues and understanding application flow.
+ * - Enhanced Security: Protects user privacy by omitting IP addresses in production environments.
  */
 class HttpResponses {
     /**
@@ -32,7 +32,8 @@ class HttpResponses {
         res: Response, 
         responseStatusCode: number = 200, // Default status code to 200 for success
         responseMessage: string, // Message to include in the response
-        data: unknown
+        data?: unknown, // Data to include in the response
+        token?: string
     ): void {
         const response: ThttpResponse = {
             success: true,
@@ -42,6 +43,7 @@ class HttpResponses {
                 url: req.originalUrl,
                 ip: req.ip || null
             },
+            token: token || null,
             message: responseMessage,
             data: data
         };

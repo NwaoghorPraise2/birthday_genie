@@ -15,7 +15,7 @@ export class AuthRepository {
         })
     }
 
-    private static userWithoutPassword(response: any){
+    public static userWithoutPassword(response: any){
         const {password, ...userWithoutPassword} = response;
         return userWithoutPassword;
     }

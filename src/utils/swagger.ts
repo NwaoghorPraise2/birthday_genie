@@ -3,9 +3,8 @@ import swaggerJsDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import logger from './logger';
 import config from '../config/config';
-import path from 'path';  // Use path module for resolving paths
 
-const options: swaggerJsDoc.Options = {
+const options = {
     definition: {
         openapi: '3.0.0',
         info: {
@@ -23,27 +22,30 @@ const options: swaggerJsDoc.Options = {
             }
         },
     },
-    apis: [path.resolve(__dirname, './src/router/*.ts')], // Use compiled JavaScript files
+    apis: ['./src/router/*.ts']
 };
 
-const swaggerSpec = (() => {
-    try {
-        return swaggerJsDoc(options);
-    } catch (error) {
-        logger.error('Error generating Swagger spec:', error);
-        throw error;
-    }
-})();
-
+/**
+ * SwaggerDocs class integrates Swagger documentation with the Express application.
+ * 
+ * - Swagger setup: Configures Swagger UI and serves the API documentation.
+ * - JWT Authentication: Supports bearer token authentication through Swagger security schemes.
+ * - Documentation routes: Exposes `/docs` for the UI and `/docs.json` for the raw JSON format of the API documentation.
+ * 
+ * Key Considerations:
+ * - API Discoverability: Enhances API discoverability and documentation through a user-friendly Swagger interface.
+ * - Security: Includes support for JWT-based authentication in the API documentation.
+ * - Maintainability: Automatically reads API routes for dynamic and up-to-date documentation.
+ */
 class SwaggerDocs {
     private app: Express;
-    private swaggerUi: typeof swaggerUi;
-    private swaggerSpec: object;
+    private swaggerUi;
+    private swaggerSpec;
 
     constructor(app: Express) {
         this.app = app;
         this.swaggerUi = swaggerUi;
-        this.swaggerSpec = swaggerSpec;
+        this.swaggerSpec = swaggerJsDoc(options);
         this.swaggerDocs();
     }
 

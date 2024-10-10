@@ -1,15 +1,16 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {NextFunction, Request, Response } from 'express';
 import httpResponse from '../utils/httpResponse';
 import responseMessage from '../constant/responseMessage';
-import httpError from '../utils/httpErrors';
-import quickers from '../utils/quickers';
+import quickers from '../utils/quickers'; 
+import GlobalError from '../utils/HttpsErrors';
 
 class ApiController {
     public test = (req: Request, res: Response, next: NextFunction): void => {
         try {
             httpResponse.ok(req, res, 200, responseMessage.SUCCESS, null);
         } catch (err) {
-            httpError.badRequest(next, err, req, 500);
+            next(new GlobalError(500, `Error`));
         }
     }
     public health = (req: Request, res: Response, next: NextFunction): void => {
@@ -22,7 +23,7 @@ class ApiController {
 
             httpResponse.ok(req, res, 200, responseMessage.SUCCESS, healthData);
         } catch (err) {
-            httpError.badRequest(next, err, req, 500);
+            next(new GlobalError(500, `Error`));
         }
     }
 }

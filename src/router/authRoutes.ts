@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { AuthController } from '../controller/authController';
 import Validator from '../middlewares/validator';
-import { User } from '../utils/validation/validate';
+import { User, UserLogin } from '../utils/validation/validate';
 import { singleUpload } from '../utils/filehandler/fileUpload';
 
 /**
@@ -166,6 +166,11 @@ class AuthRouter {
             }), 
             AuthController.register
         );
+
+        this.router.post('/login', Validator.validateRequest({
+            body: UserLogin
+        }), 
+        AuthController.login);
     }
 }
 

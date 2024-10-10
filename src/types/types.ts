@@ -7,6 +7,7 @@ export type ThttpResponse = {
         method?: string,  // HTTP method used (e.g., GET, POST)
         url?: string,  // Requested URL
     },
+    token: string | null, // Optional token for authentication or authorization
     message: string,  // A message describing the response (e.g., "Success", "Resource not found")
     data: unknown  // The actual response payload (can be any type, depending on the API)
 }
