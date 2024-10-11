@@ -3,6 +3,7 @@ import { AuthController } from '../controller/authController';
 import Validator from '../middlewares/validator';
 import { User, UserLogin } from '../utils/validation/validate';
 import { singleUpload } from '../utils/filehandler/fileUpload';
+import Auth  from '../middlewares/authMiddleware';
 
 /**
  * AuthRouter Class - Manages and defines the authentication routes for the application.
@@ -171,6 +172,8 @@ class AuthRouter {
             body: UserLogin
         }), 
         AuthController.login);
+
+        this.router.get('/me', Auth.authenticate, AuthController.me);
     }
 }
 

@@ -33,7 +33,8 @@ class HttpResponses {
         responseStatusCode: number = 200, // Default status code to 200 for success
         responseMessage: string, // Message to include in the response
         data?: unknown, // Data to include in the response
-        token?: string
+        access_token?: string,
+        refresh_token?: string
     ): void {
         const response: ThttpResponse = {
             success: true,
@@ -43,7 +44,8 @@ class HttpResponses {
                 url: req.originalUrl,
                 ip: req.ip || null
             },
-            token: token || null,
+            access_token: access_token || null,
+            refresh_token: refresh_token || null,
             message: responseMessage,
             data: data
         };

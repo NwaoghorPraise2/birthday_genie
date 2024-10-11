@@ -23,8 +23,15 @@ export class AuthService {
         const isPasswordValid: boolean = await PasswordHelpers.comparePassword(user.password,User.password);
         if(!isPasswordValid) throw new GlobalError(400, responseMessage.INVALID_CREDENTIALS);
         const payload = {id: User.id}
-        const token =  this.JWTService.signToken(payload);
+        const access_token =  this.JWTService.signAccessToken(payload);
+        const refresh_token = this.JWTService.signRefreshToken(payload);
         const result = AuthRepository.userWithoutPassword(User);
-        return {token, result}
+        return {access_token, refresh_token, result}
     };
+
+    public static async doGetUserProfile(id: string){
+        const User: IUser = await AuthRepository.getUserById(id);
+        if(!User) throw new GlobalError(400, responseMessage.NOT_FOUND(`User with ${id} `));
+        return User
+    }
 }

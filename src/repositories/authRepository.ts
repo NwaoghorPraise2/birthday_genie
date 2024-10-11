@@ -28,4 +28,13 @@ export class AuthRepository {
        })
        return this.userWithoutPassword(createduser);
     }
+
+    public static async getUserById(id: string){
+        const User = await db.user.findUnique({
+            where: {
+                id: id
+            }
+        })
+        return this.userWithoutPassword(User);
+    }
 }

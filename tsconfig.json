@@ -4,6 +4,7 @@
       "lib": ["esnext"],
       "outDir": "./dist",
       "forceConsistentCasingInFileNames": true,
+        "typeRoots": [".src/types/express.d.ts", "./node_modules/@types"],
       "strict": true,
       "baseUrl": ".",
       "paths": {

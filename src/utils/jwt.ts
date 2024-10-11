@@ -10,8 +10,8 @@ class JWTService {
     private refreshSecret: string;
 
     private constructor() { 
-        this.secret = config.JWT_SECRET as string;
-        this.expiresIn = config.JWT_EXPIRES_IN as string;
+        this.secret = config.JWT_ACCESS_SECRET as string;
+        this.expiresIn = config.JWT_ACCESS_EXPIRES_IN as string;
         this.refreshSecret = config.JWT_REFRESH_SECRET as string;
         this.refreshExpiresIn = config.JWT_REFRESH_EXPIRES_IN as string;
     }
@@ -23,16 +23,16 @@ class JWTService {
         return JWTService.instance;
     }
 
-    public signToken(payload: object): string { 
-            return jwt.sign(payload, this.secret, { expiresIn: this.expiresIn }) as string;
+    public signAccessToken(payload: object): string { 
+            return jwt.sign(payload, this.secret, { expiresIn: this.expiresIn });
     }
 
-    public verifyToken(token: string): string{
+    public verifyAccessToken(token: string): string{
             return jwt.verify(token, this.secret) as string;
     }
 
     public signRefreshToken(payload: object): string {
-        return jwt.sign(payload, this.secret, { expiresIn: this.refreshExpiresIn }) as string;
+        return jwt.sign(payload, this.secret, { expiresIn: this.refreshExpiresIn });
     }
 }
 
