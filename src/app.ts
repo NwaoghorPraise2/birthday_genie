@@ -6,6 +6,7 @@ import helmet from 'helmet';
 import cors from 'cors';
 import GlobalError from './utils/HttpsErrors';
 import SwaggerDocs from './utils/swagger';
+import compression from 'compression';
 
 /**
  * The App class configures and initializes the Express application.
@@ -33,6 +34,7 @@ class App {
             credentials: true,
         }));
         this.app.use(helmet());
+        this.app.use(compression());
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: true }));
 
