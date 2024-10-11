@@ -5,6 +5,7 @@ import { IUser, IUserLogin } from '../types/auth.types';
 import PasswordHelpers from '../utils/hash';
 import responseMessage from '../constant/responseMessage';
 import JWTService from '../utils/jwt';
+import emailEmitter from '../utils/emitter';
 
 export class AuthService {
     private static JWTService = JWTService.getInstance();
@@ -12,9 +13,18 @@ export class AuthService {
     public static async doUserRegistration(user: IUser){
        const isUserExists: unknown = await AuthRepository.getUserByEmail(user.email);
        if(isUserExists) throw new GlobalError(409, responseMessage.USER_ALREADY_EXISTS);
+       
        const hashedPassword = await PasswordHelpers.hashPassword(user.password);
-       const result: unknown = await AuthRepository.createUser({...user, password: hashedPassword});
-       return result
+
+       const result = await AuthRepository.createUser({...user, password: hashedPassword}) as IUser;
+       if(!result) throw new GlobalError(500, responseMessage.SOMETHING_WENT_WRONG);
+
+       emailEmitter.emit('Welcome-Email', {
+          email: result?.email, 
+          name: result.username
+       })
+
+       return result;
     }
 
     public static async doLogin(user: IUserLogin){
