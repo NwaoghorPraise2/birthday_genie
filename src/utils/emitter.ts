@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 import config from '../config/config';
 import EventEmitter from 'events';
@@ -11,10 +12,10 @@ class EmailEmitter extends EventEmitter {
     constructor(frontEndUrl: string) {
         super();
         this.frontEndUrl = frontEndUrl;
+        this.on('Welcome-Email', this.sendWelcomeEmail);
     }
 
-    private async sendWelcomeEmail(data: { email: string, name: string }): Promise<void> {
-        try {
+    private sendWelcomeEmail = async (data: { email: string, name: string }) => {
             const emailContent: string = await welcomeUsertemp.generateWelcomeEmail(data.email, data.name);
 
             await sendEmail({
@@ -22,12 +23,7 @@ class EmailEmitter extends EventEmitter {
                 subject: 'Welcome to Birthday Genie',
                 content: emailContent
             });
-
             logger.info(`Welcome email successfully sent to ${data.email}`);
-        } catch (error) {
-            logger.error(`Failed to send welcome email to ${data.email}. Error: ${error instanceof Error ? error.message : error}`);
-            throw error;
-        }
     }
 }
 
