@@ -3,7 +3,7 @@
 import responseMessage from '../constant/responseMessage';
 import { AuthService } from '../services/authService';
 import { IUser, IUserLogin } from '../types/auth.types';
-import httpResponse from '../utils/httpResponse';
+import httpResponse from '../dto/httpResponse';
 import { NextFunction, Request, Response } from 'express';
 import asyncHandler from '../utils/asyncHandler';
 import logger from '../utils/logger';

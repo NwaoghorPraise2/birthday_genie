@@ -28,8 +28,8 @@ export default {
     //EMAIL
     SMTP_HOST: process.env.SMTP_HOST,
     SMTP_PORT: process.env.SMTP_PORT,
-    SMTP_USER: process.env.SMTP_USERNAME,
-    SMTP_PASS: process.env.SMTP_PASSWORD,
+    SMTP_USER: process.env.SMTP_USER,
+    SMTP_PASS: process.env.SMTP_PASS,
     SMTP_FROM: process.env.SMTP_FROM,
     EMAIL_FROM: process.env.EMAIL_FROM
 };

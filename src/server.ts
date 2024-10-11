@@ -27,25 +27,6 @@ class Server {
                     }
                 });
 
-                process.on('unhandledRejection', (reason, promise) => {
-                    logger.error('Unhandled Rejection at:', promise, 'reason:', reason);
-                    server.close(() => {
-                        process.exit(1);
-                    });
-                });
-                
-                process.on('uncaughtException', (error) => {
-                    logger.error('Uncaught Exception:', { meta: error });
-                    process.exit(1);
-                });
-
-                process.on('SIGINT', () => {
-                    logger.info('SIGINT RECEIVED. Shutting down gracefully');
-                    server.close(() => {
-                        logger.info('Process terminated!');
-                    });
-                });
-
             } catch (error) {
                 logger.error('Failed to log server metadata:', { meta: error });
 

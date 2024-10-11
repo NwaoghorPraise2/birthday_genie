@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {NextFunction, Request, Response } from 'express';
-import httpResponse from '../utils/httpResponse';
+import httpResponse from '../dto/httpResponse';
 import responseMessage from '../constant/responseMessage';
 import quickers from '../utils/quickers'; 
 import GlobalError from '../utils/HttpsErrors';
