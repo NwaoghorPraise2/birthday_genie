@@ -11,3 +11,4 @@ check the delay to upload image
 refresh tokeon
 valiadate email
 make emails templeates.
+Make Email te,ps
