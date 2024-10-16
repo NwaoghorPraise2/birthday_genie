@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { ThttpResponse } from '../types/types';
 import { ApplicationENV } from '../constant/application';
 import config from '../config/config';
-import logger from './logger';
+import logger from '../utils/logger';
 
 /**
  * HttpResponses Class provides standardized methods for sending HTTP responses.

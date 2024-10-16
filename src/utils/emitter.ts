@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
 import config from '../config/config';
 import EventEmitter from 'events';
 import sendEmail from './mail/sendEmail';

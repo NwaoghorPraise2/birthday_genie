@@ -1,5 +1,5 @@
 import express, { NextFunction, Response, Request } from 'express';
-import apiRouter from './router/apiRouter';
+import apiRouter from './router/apiRoute';
 import globalErrorHandler from './middlewares/handleGlobalErrors';
 import responseMessage from './constant/responseMessage';
 import helmet from 'helmet';

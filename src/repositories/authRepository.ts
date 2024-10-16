@@ -15,6 +15,17 @@ export class AuthRepository {
         })
     }
 
+    public static async getUserByEmailOrUsername(email: string, username: string) {
+        return await db.user.findFirst({
+            where: {
+                OR: [
+                    { email: email },
+                    { username: username }
+                ]
+            }
+        });
+    }    
+
     public static userWithoutPassword(response: any){
         const {password, ...userWithoutPassword} = response;
         return userWithoutPassword;

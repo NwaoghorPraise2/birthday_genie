@@ -11,7 +11,7 @@ export class AuthService {
     private static JWTService = JWTService.getInstance();
 
     public static async doUserRegistration(user: IUser){
-       const isUserExists: unknown = await AuthRepository.getUserByEmail(user.email);
+       const isUserExists: unknown = await AuthRepository.getUserByEmailOrUsername(user.email, user.username);
        if(isUserExists) throw new GlobalError(409, responseMessage.USER_ALREADY_EXISTS);
        
        const hashedPassword = await PasswordHelpers.hashPassword(user.password);
@@ -21,7 +21,7 @@ export class AuthService {
 
        emailEmitter.emit('Welcome-Email', {
           email: result?.email, 
-          name: result.username
+          name: result?.username
        })
 
        return result;

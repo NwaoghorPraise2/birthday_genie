@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import apiController from '../controller/apiController';
-import authRoutes from './authRoutes';
+import authRoutes from './authRoute';
 
 /**
  * AppRouter Class - Manages and defines the routes for the application.
