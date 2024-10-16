@@ -6,6 +6,10 @@ export interface IUser {
     name?: string;
     phoneNumber?: string;
     profilePic?: string;
+    resetPasswordToken?: string;
+	resetPasswordTokenExpiresAt?: Date;
+    verificationToken?: string;
+	verificationTokenExpiresAt?: Date;
 }
 
 export interface IUserLogin {

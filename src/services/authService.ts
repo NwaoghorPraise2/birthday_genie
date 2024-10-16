@@ -5,7 +5,8 @@ import { IUser, IUserLogin } from '../types/auth.types';
 import PasswordHelpers from '../utils/hash';
 import responseMessage from '../constant/responseMessage';
 import JWTService from '../utils/jwt';
-import emailEmitter from '../utils/emitter';
+// import emailEmitter from '../utils/emitter';
+import generateTokens from '../utils/generateVerificationCode';
 
 export class AuthService {
     private static JWTService = JWTService.getInstance();
@@ -15,14 +16,17 @@ export class AuthService {
        if(isUserExists) throw new GlobalError(409, responseMessage.USER_ALREADY_EXISTS);
        
        const hashedPassword = await PasswordHelpers.hashPassword(user.password);
+    
+       const {verificationToken, verificationTokenExpiresAt} = generateTokens;
 
-       const result = await AuthRepository.createUser({...user, password: hashedPassword}) as IUser;
+       const result = await AuthRepository.createUser({...user, password: hashedPassword, verificationToken, verificationTokenExpiresAt}) as IUser;
+
        if(!result) throw new GlobalError(500, responseMessage.SOMETHING_WENT_WRONG);
 
-       emailEmitter.emit('Welcome-Email', {
-          email: result?.email, 
-          name: result?.username
-       })
+    //    emailEmitter.emit('Welcome-Email', {
+    //       email: result?.email, 
+    //       name: result?.username
+    //    })
 
        return result;
     }
