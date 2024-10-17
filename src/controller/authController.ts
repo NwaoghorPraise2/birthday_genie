@@ -8,6 +8,8 @@ import { NextFunction, Request, Response } from 'express';
 import asyncHandler from '../utils/asyncHandler';
 import logger from '../utils/logger';
 import GlobalError from '../utils/HttpsErrors';
+import {CookiesHandler} from '../utils/handleCookies';
+
 
 export class AuthController {
     public static register = asyncHandler.handle( async(req: Request, res:Response, _next:NextFunction): Promise<void> =>{
@@ -16,7 +18,10 @@ export class AuthController {
         // if(!req.file) data.profilePic = 'uploads/default.png'
         data.profilePic = req.file?.path;
         const result = await AuthService.doUserRegistration(data)
-        return httpResponse.ok(req, res, 201, responseMessage.SUCCESS, result)
+        
+        CookiesHandler.setCookies(res, result.result.id as string, result.access_token);
+
+        return httpResponse.ok(req, res, 201, responseMessage.SUCCESS, result.result)
     })
 
     public static login = asyncHandler.handle( async(req: Request, res:Response, _next:NextFunction): Promise<void> =>{

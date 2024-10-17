@@ -19,6 +19,7 @@ interface EmailOptions {
     email: string;
     subject: string;
     content: string;
+    category: string;
 }
 
 const sendEmail = async (options: EmailOptions): Promise<void> => {
@@ -40,7 +41,8 @@ const sendEmail = async (options: EmailOptions): Promise<void> => {
             from: `${config.EMAIL_FROM} <${config.SMTP_FROM}>`,
             to: options.email,
             subject: options.subject,
-            html: options.content
+            html: options.content,
+            category: options.category
         };
 
         // Send email

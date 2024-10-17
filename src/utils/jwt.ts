@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import config from '../config/config';
 import jwt from 'jsonwebtoken';
 
@@ -32,7 +31,11 @@ class JWTService {
     }
 
     public signRefreshToken(payload: object): string {
-        return jwt.sign(payload, this.secret, { expiresIn: this.refreshExpiresIn });
+            return jwt.sign(payload, this.refreshSecret, { expiresIn: this.refreshExpiresIn });
+    }
+    
+    public verifyRefreshToken(token: string): string {
+            return jwt.verify(token, this.refreshSecret) as string;
     }
 }
 

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import GlobalError from '../utils/HttpsErrors';
 import { AuthRepository } from '../repositories/authRepository';
@@ -5,7 +6,7 @@ import { IUser, IUserLogin } from '../types/auth.types';
 import PasswordHelpers from '../utils/hash';
 import responseMessage from '../constant/responseMessage';
 import JWTService from '../utils/jwt';
-// import emailEmitter from '../utils/emitter';
+import emailEmitter from '../utils/mail/emitter';
 import generateTokens from '../utils/generateVerificationCode';
 
 export class AuthService {
@@ -23,12 +24,17 @@ export class AuthService {
 
        if(!result) throw new GlobalError(500, responseMessage.SOMETHING_WENT_WRONG);
 
-    //    emailEmitter.emit('Welcome-Email', {
-    //       email: result?.email, 
-    //       name: result?.username
-    //    })
+       const payload = {id: result.id};
+       const access_token =  this.JWTService.signAccessToken(payload);
+       const refresh_token = this.JWTService.signRefreshToken(payload);
 
-       return result;
+        emailEmitter.emit('Verification-Email', {
+        email: result?.email,
+        name: result?.username, 
+        verificationToken: result?.verificationToken
+        })
+
+       return {access_token, refresh_token, result};
     }
 
     public static async doLogin(user: IUserLogin){

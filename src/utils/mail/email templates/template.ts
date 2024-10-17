@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/require-await */
-import config from '../config/config';
+import config from '../../../config/config';
 
 class EmailTemplate {
     private frontEndUrl: string;

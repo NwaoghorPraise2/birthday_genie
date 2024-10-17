@@ -7,6 +7,7 @@ import cors from 'cors';
 import GlobalError from './utils/HttpsErrors';
 import SwaggerDocs from './utils/swagger';
 import compression from 'compression';
+import cookieParser from 'cookie-parser';
 
 /**
  * The App class configures and initializes the Express application.
@@ -37,6 +38,7 @@ class App {
         this.app.use(compression());
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: true }));
+        this.app.use(cookieParser());
 
         this.app.use('/api', apiRouter);
 
