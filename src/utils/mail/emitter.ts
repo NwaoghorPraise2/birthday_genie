@@ -29,7 +29,7 @@ class EmailEmitter extends EventEmitter {
     }
 
     private sendVerificationEmail = async (data: {email: string, name: string, verificationToken: string}) => {
-        const emailContent = VERIFICATION_EMAIL_TEMPLATE.replace(/{{name}}/g, data.name).replace(/{{verificationToken}}/g, data.verificationToken)
+        const emailContent = VERIFICATION_EMAIL_TEMPLATE.replace('{verificationToken}', data.verificationToken).replace('{name}', data.name);
 
         await sendEmail({
             email: data.email,

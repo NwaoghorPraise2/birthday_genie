@@ -24,5 +24,6 @@ export default {
     INVALID_USERNAME: `Invalid username`,
     USERNAME_ALREADY_EXISTS: `Username already exists`,
     INVALID_NAME: `Invalid name`,
-    NAME_ALREADY_EXISTS: `Name already exists`,    
+    NAME_ALREADY_EXISTS: `Name already exists`,
+    ALREADY_VERIFIED: `User is already verified`,    
 }

@@ -168,12 +168,16 @@ class AuthRouter {
             AuthController.register
         );
 
+        this.router.post('/verify-email', AuthController.verifyEmail);
+
         this.router.post('/login', Validator.validateRequest({
             body: UserLogin
         }), 
         AuthController.login);
 
         this.router.get('/me', Auth.authenticate, AuthController.me);
+
+        this.router.post('/logout', AuthController.logOut)
     }
 }
 

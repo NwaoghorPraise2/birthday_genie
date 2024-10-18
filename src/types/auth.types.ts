@@ -6,6 +6,9 @@ export interface IUser {
     name?: string;
     phoneNumber?: string;
     profilePic?: string;
+    isVerified?: boolean;
+    isBlocked?: boolean;
+    refreshToken?: string;
     resetPasswordToken?: string;
 	resetPasswordTokenExpiresAt?: Date;
     verificationToken?: string;

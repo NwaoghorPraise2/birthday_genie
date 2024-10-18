@@ -2,6 +2,7 @@
 import nodemailer, { TransportOptions } from 'nodemailer';
 import config from '../../config/config';
 import logger from '../logger';
+import GlobalError from '../HttpsErrors';
 
 type TransportOptionsType = TransportOptions & {
     host: string;
@@ -51,9 +52,9 @@ const sendEmail = async (options: EmailOptions): Promise<void> => {
         // Log successful email send
         logger.info(`Email successfully sent to ${options.email}. Message ID: ${info.messageId}`);
     } catch (error) {
-        // Log error details for debugging
+        // Log error details for debugg ing
         logger.error(`Failed to send email to ${options.email}. Error: ${error instanceof Error ? error.message : error}`);
-        throw new Error(`Failed to send email: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        throw new GlobalError(500, `Failed to send email: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
 }
 

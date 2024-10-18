@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import GlobalError from '../utils/HttpsErrors';
 import { AuthRepository } from '../repositories/authRepository';
@@ -53,5 +52,31 @@ export class AuthService {
         const User: IUser = await AuthRepository.getUserById(id);
         if(!User) throw new GlobalError(400, responseMessage.NOT_FOUND(`User with ${id} `));
         return User
+    }
+
+    public static async verifyEmail(token: string){
+        const user: IUser = await AuthRepository.getUserByVerificationToken(token);
+
+        if(!user) throw new GlobalError(400, responseMessage.NOT_FOUND(`Expired Token or Verification Token`));
+
+        if(user.isVerified === true) throw new GlobalError(400, responseMessage.ALREADY_VERIFIED);
+
+        
+        user.verificationToken = undefined;
+        user.verificationTokenExpiresAt = undefined;
+
+        await AuthRepository.verifyUser(
+            user.id as string,
+            user.isVerified = true, 
+            user.verificationToken = undefined, 
+            user.verificationTokenExpiresAt = undefined
+         );
+
+        // emailEmitter.emit('Welcome-Email', {
+        //     email: user.email, 
+        //     name: user.username
+        // });
+
+        return user;
     }
 }

@@ -38,5 +38,25 @@ export class AuthController {
         const result = await AuthService.doGetUserProfile(userId)
         return httpResponse.ok(req, res, 200, responseMessage.SUCCESS, result)
     })
+
+    public static verifyEmail = asyncHandler.handle( async(req: Request, res:Response, _next:NextFunction): Promise<void> => {
+        const {token} = req.body;
+        const result = await AuthService.verifyEmail(token as string)
+        return httpResponse.ok(req, res, 200, responseMessage.SUCCESS, result)
+    })
+
+    // public static logOut = asyncHandler.handle( async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
+    //     try{
+    //         res.clearCookie('token');
+        
+    //         // Ensure you return a Promise, even if synchronous
+    //         httpResponse.ok(req, res, 204, responseMessage.SUCCESS);
+    //         return Promise.resolve();
+    //     } catch (error) {
+    //         return Promise.reject(error);
+    //     }
+     
+    // });
+    
 } 
 

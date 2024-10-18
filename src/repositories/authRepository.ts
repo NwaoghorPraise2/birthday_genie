@@ -48,4 +48,29 @@ export class AuthRepository {
         })
         return this.userWithoutPassword(User);
     }
+
+    public static async getUserByVerificationToken(token: string) {
+        return await db.user.findFirst({
+            where: {
+                verificationToken: token,
+                verificationTokenExpiresAt: {
+                    gt: new Date() 
+                }
+            }
+        });
+    }
+
+    public static async verifyUser(id: string, isVerified: boolean, verificationToken: undefined | null, verificationTokenExpiresAt: undefined | null ) {
+        return await db.user.update({
+            where: {
+                id: id
+            },
+            data: {
+                isVerified,
+                verificationToken,
+                verificationTokenExpiresAt,
+            }
+        });
+    }   
+    
 }
