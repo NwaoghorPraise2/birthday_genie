@@ -1,3 +1,4 @@
+import { DecodedToken } from '@/types/auth.types';
 import config from '../config/config';
 import jwt from 'jsonwebtoken';
 
@@ -26,16 +27,16 @@ class JWTService {
             return jwt.sign(payload, this.secret, { expiresIn: this.expiresIn });
     }
 
-    public verifyAccessToken(token: string): string{
-            return jwt.verify(token, this.secret) as string;
+    public verifyAccessToken(token: string){
+            return jwt.verify(token, this.secret) as DecodedToken;
     }
 
     public signRefreshToken(payload: object): string {
             return jwt.sign(payload, this.refreshSecret, { expiresIn: this.refreshExpiresIn });
     }
-    
-    public verifyRefreshToken(token: string): string {
-            return jwt.verify(token, this.refreshSecret) as string;
+
+    public verifyRefreshToken(token: string){
+            return jwt.verify(token, this.refreshSecret) as DecodedToken;
     }
 }
 

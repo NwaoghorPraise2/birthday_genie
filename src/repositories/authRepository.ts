@@ -27,7 +27,7 @@ export class AuthRepository {
     }    
 
     public static userWithoutPassword(response: any){
-        const {password, ...userWithoutPassword} = response;
+        const {password, refreshToken, ...userWithoutPassword} = response;
         return userWithoutPassword;
     }
 
@@ -71,6 +71,51 @@ export class AuthRepository {
                 verificationTokenExpiresAt,
             }
         });
-    }   
+    }  
+    
+    public static async updateRefreshToken(id: string, refreshToken: string | null) {
+        return await db.user.update({
+            where: {
+                id: id
+            },
+            data: {
+                refreshToken
+            }
+        });
+    }
+
+    public static async updatePassword(id: string, newPassword: string) {
+        return await db.user.update({
+            where: {
+                id: id
+            },
+            data: {
+                password: newPassword
+            }
+        });
+    }
+
+    public static async updateResetPasswordToken(id: string, resetPasswordToken: string | null, resetPasswordTokenExpiresAt: Date | null) {
+        return await db.user.update({
+            where: {
+                id: id
+            },
+            data: {
+                resetPasswordToken,
+                resetPasswordTokenExpiresAt
+            }
+        });
+    }
+
+    public static async getUserByResetPasswordToken(token: string) {
+        return await db.user.findFirst({
+            where: {
+                resetPasswordToken: token,
+                resetPasswordTokenExpiresAt: {
+                    gt: new Date()
+                }
+            }
+        });
+    }
     
 }

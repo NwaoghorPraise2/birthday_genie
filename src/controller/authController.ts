@@ -12,6 +12,17 @@ import {CookiesHandler} from '../utils/handleCookies';
 
 
 export class AuthController {
+
+    private static setCookies(res: Response, userId:string, access_token: string, refresh_token: string): void {
+        CookiesHandler.setAccessTokenCookies(res, userId, access_token);
+        CookiesHandler.setRefreshTokenCookies(res, userId, refresh_token); 
+    }
+
+    private static clearCookies(res: Response) {
+        res.clearCookie('access_token')
+        res.clearCookie('refresh_token')
+    }
+
     public static register = asyncHandler.handle( async(req: Request, res:Response, _next:NextFunction): Promise<void> =>{
         const data: IUser= req.body;
         //Add defualt profile pic if there no one in the request.
@@ -19,7 +30,7 @@ export class AuthController {
         data.profilePic = req.file?.path;
         const result = await AuthService.doUserRegistration(data)
         
-        CookiesHandler.setCookies(res, result.result.id as string, result.access_token);
+        this.setCookies(res, result.result.id as string, result.access_token, result.refresh_token);
 
         return httpResponse.ok(req, res, 201, responseMessage.SUCCESS, result.result)
     })
@@ -27,14 +38,14 @@ export class AuthController {
     public static login = asyncHandler.handle( async(req: Request, res:Response, _next:NextFunction): Promise<void> =>{
         const data: IUserLogin = req.body;
         const { access_token, refresh_token, result} = await AuthService.doLogin(data)
+        this.setCookies(res, result.id as string, access_token, refresh_token);
         return httpResponse.ok(req, res, 200, responseMessage.SUCCESS, result, access_token, refresh_token)
     })
 
     public static me = asyncHandler.handle( async(req: Request, res:Response, _next:NextFunction): Promise<void> => {
         if(!req.user) return _next( new GlobalError(404, responseMessage.USER_NOT_FOUND))
-
-        const userId: string = typeof req.user === 'string' ? req.user : req.user.id;
-            logger.info(`This is the userID: ${userId}`);
+        const userId = req.user as string;
+        logger.info(`This is the userID: ${userId}`);
         const result = await AuthService.doGetUserProfile(userId)
         return httpResponse.ok(req, res, 200, responseMessage.SUCCESS, result)
     })
@@ -45,18 +56,39 @@ export class AuthController {
         return httpResponse.ok(req, res, 200, responseMessage.SUCCESS, result)
     })
 
-    // public static logOut = asyncHandler.handle( async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
-    //     try{
-    //         res.clearCookie('token');
-        
-    //         // Ensure you return a Promise, even if synchronous
-    //         httpResponse.ok(req, res, 204, responseMessage.SUCCESS);
-    //         return Promise.resolve();
-    //     } catch (error) {
-    //         return Promise.reject(error);
-    //     }
-     
-    // });
+    public static refreshAccessToken = asyncHandler.handle( async(req: Request, res:Response, _next:NextFunction): Promise<void> => {
+        const {refresh_token} = req.body;
+        const incomingRefreshToken: string = req.cookies.refresh_token || refresh_token; 
+        const result = await AuthService.refreshToken(incomingRefreshToken)
+        return httpResponse.ok(req, res, 200, responseMessage.SUCCESS, result.access_token, result.refresh_token)
+    })
+
+    public static changePassword = asyncHandler.handle( async(req: Request, res:Response, _next:NextFunction): Promise<void> => {
+        const userId = req.user as string;
+        const {oldPassword, newPassword} = req.body;
+        await AuthService.doChangeUserPassword(userId, oldPassword as string, newPassword as string)
+        return httpResponse.ok(req, res, 200, responseMessage.SUCCESS)
+    })
+
+    public static forgotPassword = asyncHandler.handle( async(req: Request, res:Response, _next:NextFunction): Promise<void> => {
+        const {email} = req.body;
+        await AuthService.doForgotPassword(email as string)
+        return httpResponse.ok(req, res, 200, responseMessage.SUCCESS)
+    })
+
+    public static resetPassword = asyncHandler.handle( async(req: Request, res:Response, _next:NextFunction): Promise<void> => {
+        const {token} = req.params
+        const {newPassword} = req.body;
+        await AuthService.doResetPassword(token, newPassword as string)
+        return httpResponse.ok(req, res, 200, responseMessage.SUCCESS)
+    })
+
+    public static logOut = asyncHandler.handle( async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
+        const userId = req.user as string;
+        await AuthService.doLogout(userId);
+        this.clearCookies(res);
+        return httpResponse.ok(req, res, 200, responseMessage.USER_LOGGED_OUT)
+    });
     
 } 
 

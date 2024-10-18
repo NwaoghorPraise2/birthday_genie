@@ -7,22 +7,19 @@ class Auth {
     private static JWTService = JWTService.getInstance();
 
     public static authenticate = (req: Request, res: Response, next: NextFunction) => {
-
-        const token = req.headers.authorization;
+        const incomingHeaderToken = req.headers.authorization as string;
+        const headerToken = incomingHeaderToken.split(' ')[1];
+        const cookieToken = req.cookies.access_token as string;
+        const token = headerToken || cookieToken ;
         if (!token) return next(new GlobalError(401, responseMessage.UNAUTHORIZED));
 
-        const splitedToken = token.split(' ')[1];
-        if (!splitedToken) return next(new GlobalError(401, responseMessage.UNAUTHORIZED));
-
         try {
-            // Verify token
-            const decodedToken = Auth.JWTService.verifyAccessToken(splitedToken); // Explicitly referencing the class
+            const decodedToken = Auth.JWTService.verifyAccessToken(token);
             if (!decodedToken) return next(new GlobalError(401, responseMessage.UNAUTHORIZED));
 
-            req.user = decodedToken;
+            req.user = decodedToken.id;
             next();
         } catch (error) {
-            // Return error
             next(error);
         }
     }

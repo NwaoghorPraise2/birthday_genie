@@ -25,5 +25,8 @@ export default {
     USERNAME_ALREADY_EXISTS: `Username already exists`,
     INVALID_NAME: `Invalid name`,
     NAME_ALREADY_EXISTS: `Name already exists`,
-    ALREADY_VERIFIED: `User is already verified`,    
+    ALREADY_VERIFIED: `User is already verified`, 
+    NOT_VERIFIED: `User is not verified`,
+    INVALID_DATE: `Invalid date`,
+    USER_LOGGED_OUT: `User has been logged out`   
 }

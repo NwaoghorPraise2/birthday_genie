@@ -1,3 +1,9 @@
+import { JwtPayload } from 'jsonwebtoken';
+
+export interface DecodedToken extends JwtPayload {
+    id: string;
+}
+
 export interface IUser {
     id?: string;
     username: string;
@@ -19,3 +25,5 @@ export interface IUserLogin {
     email: string;
     password: string;
 }
+
+
