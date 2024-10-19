@@ -40,6 +40,14 @@ export class AuthRepository {
        return this.userWithoutPassword(createduser);
     }
 
+    public static async getUserByIdWithPassword(id: string){
+        return await db.user.findUnique({
+            where: {
+                id: id
+            }
+        })
+    }
+
     public static async getUserById(id: string){
         const User = await db.user.findUnique({
             where: {
@@ -47,6 +55,17 @@ export class AuthRepository {
             }
         })
         return this.userWithoutPassword(User);
+    }
+
+    public static async getUserByIdWithRefreshToken(id: string){
+        return await db.user.findUnique({
+            where: {
+                id: id
+            },
+            omit: {
+                password: true
+            }
+        })
     }
 
     public static async getUserByVerificationToken(token: string) {

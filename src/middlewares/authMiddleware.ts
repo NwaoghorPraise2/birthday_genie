@@ -7,12 +7,8 @@ class Auth {
     private static JWTService = JWTService.getInstance();
 
     public static authenticate = (req: Request, res: Response, next: NextFunction) => {
-        const incomingHeaderToken = req.headers.authorization as string;
-        const headerToken = incomingHeaderToken.split(' ')[1];
-        const cookieToken = req.cookies.access_token as string;
-        const token = headerToken || cookieToken ;
+        const token = req.headers?.authorization?.split(' ')[1] || req.cookies?.access_token as string; 
         if (!token) return next(new GlobalError(401, responseMessage.UNAUTHORIZED));
-
         try {
             const decodedToken = Auth.JWTService.verifyAccessToken(token);
             if (!decodedToken) return next(new GlobalError(401, responseMessage.UNAUTHORIZED));

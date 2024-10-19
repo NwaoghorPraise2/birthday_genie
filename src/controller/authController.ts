@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import responseMessage from '../constant/responseMessage';
@@ -57,10 +58,12 @@ export class AuthController {
     })
 
     public static refreshAccessToken = asyncHandler.handle( async(req: Request, res:Response, _next:NextFunction): Promise<void> => {
-        const {refresh_token} = req.body;
-        const incomingRefreshToken: string = req.cookies.refresh_token || refresh_token; 
-        const result = await AuthService.refreshToken(incomingRefreshToken)
-        return httpResponse.ok(req, res, 200, responseMessage.SUCCESS, result.access_token, result.refresh_token)
+        const incomingRefreshToken: string = req.cookies?.refresh_token || req.body?.refresh_token; 
+        if(!incomingRefreshToken) throw new GlobalError(400, responseMessage.NOT_FOUND(`Refresh Token`));
+        logger.info(`Refresh: ${incomingRefreshToken}`);
+        const result = await AuthService.refreshToken(incomingRefreshToken);
+        this.setCookies(res, result.userId, result.access_token, result.refresh_token);
+        return httpResponse.ok(req, res, 200, responseMessage.SUCCESS, null, result.access_token, result.refresh_token);
     })
 
     public static changePassword = asyncHandler.handle( async(req: Request, res:Response, _next:NextFunction): Promise<void> => {

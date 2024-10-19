@@ -7,6 +7,7 @@ import JWTService from '../utils/jwt';
 import emailEmitter from '../utils/mail/emitter';
 import generateTokens from '../utils/tokenGenerator';
 import { DecodedToken, IUser, IUserLogin } from '../types/auth.types';
+import logger from '../utils/logger';
 
 export class AuthService {
     private static JWTService = JWTService.getInstance();
@@ -87,9 +88,10 @@ export class AuthService {
         if(!refreshToken) throw new GlobalError(400, responseMessage.NOT_FOUND(`Refresh Token`));
 
         const decodedToken: DecodedToken = this.JWTService.verifyRefreshToken(refreshToken);
+        logger.info(`decodedToken: ${decodedToken.id}`)
         if(!decodedToken) throw new GlobalError(401, responseMessage.INVALID_TOKEN);
 
-        const user: IUser = await AuthRepository.getUserById(decodedToken.id);
+        const user: IUser = await AuthRepository.getUserByIdWithRefreshToken(decodedToken.id);
         if(!user) throw new GlobalError(400, responseMessage.NOT_FOUND(`User with ${refreshToken} `));
 
         if(user.refreshToken !== refreshToken) throw new GlobalError(401, responseMessage.INVALID_TOKEN);
@@ -98,11 +100,11 @@ export class AuthService {
 
         const {access_token, refresh_token} = await this.generateAcccesAndRefreshToken(payload);
 
-        return {access_token, refresh_token};
+        return {access_token, refresh_token, userId: payload.id};
     }
 
     public static async doChangeUserPassword(userId: string, oldPassword:string, newPassword: string){
-        const user: IUser = await AuthRepository.getUserById(userId);
+        const user: IUser = await AuthRepository.getUserByIdWithPassword(userId);
 
         const isPasswordValid: boolean = await PasswordHelpers.comparePassword(oldPassword, user.password);
         if(!isPasswordValid) throw new GlobalError(400, responseMessage.INVALID_CREDENTIALS);

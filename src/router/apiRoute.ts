@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import apiController from '../controller/apiController';
 import authRoutes from './authRoute';
+import userRoutes from './userRoute';
+import friendsRoute from './friendsRoute';
 
 /**
  * AppRouter Class - Manages and defines the routes for the application.
@@ -66,6 +68,8 @@ class AppRouter {
 
         // Auth routes are separated in another module
         this.router.use('/auth', authRoutes);
+        this.router.use('/user', userRoutes);
+        this.router.use('/friends', friendsRoute);
     }
 }
 
