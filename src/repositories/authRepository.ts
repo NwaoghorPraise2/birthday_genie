@@ -61,9 +61,6 @@ export class AuthRepository {
         return await db.user.findUnique({
             where: {
                 id: id
-            },
-            omit: {
-                password: true
             }
         })
     }
@@ -79,18 +76,22 @@ export class AuthRepository {
         });
     }
 
-    public static async verifyUser(id: string, isVerified: boolean, verificationToken: undefined | null, verificationTokenExpiresAt: undefined | null ) {
-        return await db.user.update({
+    public static async verifyUser(id: string, isVerified: boolean, verificationToken: string | undefined, verificationTokenExpiresAt: Date | undefined) {
+        const user = await db.user.update({
             where: {
                 id: id
             },
             data: {
                 isVerified,
-                verificationToken,
-                verificationTokenExpiresAt,
+                verificationToken: verificationToken ?? null,
+                verificationTokenExpiresAt: verificationTokenExpiresAt ?? null,
             }
         });
-    }  
+
+        return this.userWithoutPassword(user);
+    }
+    
+    
     
     public static async updateRefreshToken(id: string, refreshToken: string | null) {
         return await db.user.update({

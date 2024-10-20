@@ -7,3 +7,7 @@ check the delay to upload image
 valiadate email
 make emails templeates.
 Make Email te,ps
+
+//
+Resend email verfication token
+Resend passwordreset token.

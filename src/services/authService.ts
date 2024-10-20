@@ -62,27 +62,28 @@ export class AuthService {
         return User
     }
 
-    public static async verifyEmail(token: string){
+    public static async verifyEmail(token: string) {
         const user: IUser = await AuthRepository.getUserByVerificationToken(token);
+    
+        if (!user) throw new GlobalError(400, responseMessage.NOT_FOUND(`Expired Token or Verification Token`));
+    
+        if (user.isVerified === true) throw new GlobalError(400, responseMessage.ALREADY_VERIFIED);
 
-        if(!user) throw new GlobalError(400, responseMessage.NOT_FOUND(`Expired Token or Verification Token`));
-
-        if(user.isVerified === true) throw new GlobalError(400, responseMessage.ALREADY_VERIFIED);
-
-        await AuthRepository.verifyUser(
-            user.id as string,
-            user.isVerified = true, 
-            user.verificationToken = undefined, 
-            user.verificationTokenExpiresAt = undefined
-         );
-
-        // emailEmitter.emit('Welcome-Email', {
-        //     email: user.email, 
-        //     name: user.username
-        // });
-
+        user.isVerified = true;
+        user.verificationToken = undefined;
+        user.verificationTokenExpiresAt = undefined;
+    
+        await AuthRepository.verifyUser(user.id as string, user.isVerified, user.verificationToken, user.verificationTokenExpiresAt);
+    
+        emailEmitter.emit('Welcome-Email', {
+            email: user.email, 
+            name: user.username
+        });
+    
         return user;
     }
+    
+    
 
     public static async refreshToken(refreshToken: string){
         if(!refreshToken) throw new GlobalError(400, responseMessage.NOT_FOUND(`Refresh Token`));
@@ -121,7 +122,7 @@ export class AuthService {
         const {resetPasswordToken, resetPasswordTokenExpiresAt} = generateTokens;
 
         await AuthRepository.updateResetPasswordToken(user.id as string, resetPasswordToken, resetPasswordTokenExpiresAt);
-        /// Do the Reset Email Stuff
+
         emailEmitter.emit('Reset-Password-Email', {
             email: user.email,
             name: user.username,
@@ -137,6 +138,12 @@ export class AuthService {
 
         await AuthRepository.updatePassword(user.id as string, hashedNewPassword);
         await AuthRepository.updateResetPasswordToken(user.id as string, null, null);
+
+        emailEmitter.emit('Reset-Password-Success-Email', {
+            email: user.email,
+            name: user.username
+        });
+
     }
 
     public static async doLogout(userId: string){
