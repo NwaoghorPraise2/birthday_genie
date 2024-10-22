@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import GlobalError from '../utils/HttpsErrors';
 import { AuthRepository } from '../repositories/authRepository';
-import PasswordHelpers from '../utils/hash';
 import responseMessage from '../constant/responseMessage';
 import JWTService from '../utils/jwt';
 import emailEmitter from '../utils/mail/emitter';
 import generateTokens from '../utils/tokenGenerator';
 import { DecodedToken, IUser, IUserLogin } from '../types/auth.types';
 import logger from '../utils/logger';
+import HashingService from '../utils/hash';
 
 export class AuthService {
     private static JWTService = JWTService.getInstance();
@@ -16,7 +16,8 @@ export class AuthService {
         const userId = payload.id;
         const access_token: string = this.JWTService.signAccessToken(payload);
         const refresh_token: string= this.JWTService.signRefreshToken(payload); 
-        await AuthRepository.updateRefreshToken(userId, refresh_token); 
+        const hashRefreshToken = await HashingService.doHashing(refresh_token)
+        await AuthRepository.updateRefreshToken(userId, hashRefreshToken); 
         return { access_token, refresh_token }; 
     }
     
@@ -24,7 +25,7 @@ export class AuthService {
        const isUserExists: unknown = await AuthRepository.getUserByEmailOrUsername(user.email, user.username);
        if(isUserExists) throw new GlobalError(409, responseMessage.USER_ALREADY_EXISTS);
        
-       const hashedPassword = await PasswordHelpers.hashPassword(user.password);
+       const hashedPassword = await HashingService.doHashing(user.password);
     
        const {verificationToken, verificationTokenExpiresAt} = generateTokens;
 
@@ -48,7 +49,7 @@ export class AuthService {
     public static async doLogin(user: IUserLogin){
         const User: IUser = await AuthRepository.getUserByEmail(user.email);
         if(!User) throw new GlobalError(400, responseMessage.NOT_FOUND(`User with ${user.email} `));
-        const isPasswordValid: boolean = await PasswordHelpers.comparePassword(user.password,User.password);
+        const isPasswordValid: boolean = await HashingService.verifyHashEntity(user.password,User.password);
         if(!isPasswordValid) throw new GlobalError(400, responseMessage.INVALID_CREDENTIALS);
         const payload = {id: User.id as string}
         const {access_token, refresh_token} = await this.generateAcccesAndRefreshToken(payload);
@@ -94,8 +95,10 @@ export class AuthService {
 
         const user: IUser = await AuthRepository.getUserByIdWithRefreshToken(decodedToken.id);
         if(!user) throw new GlobalError(400, responseMessage.NOT_FOUND(`User with ${refreshToken} `));
+        
+        const isRefreshTokenValid =  await HashingService.verifyHashEntity(refreshToken, user.refreshToken as string)
 
-        if(user.refreshToken !== refreshToken) throw new GlobalError(401, responseMessage.INVALID_TOKEN);
+        if(!isRefreshTokenValid) throw new GlobalError(401, responseMessage.INVALID_TOKEN);
 
         const payload = {id: user.id as string}
 
@@ -107,10 +110,10 @@ export class AuthService {
     public static async doChangeUserPassword(userId: string, oldPassword:string, newPassword: string){
         const user: IUser = await AuthRepository.getUserByIdWithPassword(userId);
 
-        const isPasswordValid: boolean = await PasswordHelpers.comparePassword(oldPassword, user.password);
+        const isPasswordValid: boolean = await HashingService.verifyHashEntity(oldPassword, user.password);
         if(!isPasswordValid) throw new GlobalError(400, responseMessage.INVALID_CREDENTIALS);
 
-        const hashedNewPassword = await PasswordHelpers.hashPassword(newPassword);
+        const hashedNewPassword = await HashingService.doHashing(newPassword);
 
         await AuthRepository.updatePassword(userId, hashedNewPassword);
     }
@@ -134,7 +137,7 @@ export class AuthService {
         const user: IUser = await AuthRepository.getUserByResetPasswordToken(token);
         if(!user) throw new GlobalError(400, responseMessage.NOT_FOUND(`Expired Token or Invalid Token`));
 
-        const hashedNewPassword = await PasswordHelpers.hashPassword(newPassword);
+        const hashedNewPassword = await HashingService.doHashing(newPassword);
 
         await AuthRepository.updatePassword(user.id as string, hashedNewPassword);
         await AuthRepository.updateResetPasswordToken(user.id as string, null, null);
@@ -149,6 +152,8 @@ export class AuthService {
     public static async doResendEmailVerificationEmail(email: string){
         const user: IUser = await AuthRepository.getUserByEmail(email);
         if(!user) throw new GlobalError(400, responseMessage.NOT_FOUND(`User with ${email} `));
+
+        if(user.isVerified === true) throw new GlobalError(400, responseMessage.ALREADY_VERIFIED);
 
         const {verificationToken, verificationTokenExpiresAt} = generateTokens;
 

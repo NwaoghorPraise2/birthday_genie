@@ -33,7 +33,7 @@ export class AuthController {
         
         this.setCookies(res, result.result.id as string, result.access_token, result.refresh_token);
 
-        return httpResponse.ok(req, res, 201, responseMessage.SUCCESS, result.result)
+        return httpResponse.ok(req, res, 201, responseMessage.SUCCESS, result.result, result.access_token, result.refresh_token)
     })
 
     public static login = asyncHandler.handle( async(req: Request, res:Response, _next:NextFunction): Promise<void> =>{

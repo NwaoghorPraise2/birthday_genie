@@ -13,15 +13,15 @@ import config from '../config/config';
  * - Salt Configuration: The number of salt rounds used for hashing is configurable through environment variables.
  * - Async Operations: Methods are asynchronous, allowing for non-blocking operations during password processing.
  */
-class PasswordHelpers {
+class HashingService {
     /**
      * Hashes a plaintext password.
      *
      * @param password - The plaintext password to be hashed
      * @returns A promise that resolves to the hashed password
      */
-    public static async hashPassword(password: string) {
-        return await bcrypt.hash(password, Number(config.HASH_SALT));
+    public static async doHashing(entity: string) {
+        return await bcrypt.hash(entity, Number(config.HASH_SALT));
     }
 
     /**
@@ -31,9 +31,9 @@ class PasswordHelpers {
      * @param hashPassword - The hashed password to compare against
      * @returns A promise that resolves to a boolean indicating if the passwords match
      */
-    public static async comparePassword(password: string, hashPassword: string) {
-        return await bcrypt.compare(password, hashPassword);
+    public static async verifyHashEntity(entity: string, hashedEntity: string) {
+        return await bcrypt.compare(entity, hashedEntity);
     }
 }
 
-export default PasswordHelpers;
+export default HashingService;

@@ -3,7 +3,6 @@ import { ThttpError } from '../types/types';
 import logger from '../utils/logger';
 import config from '../config/config';
 import { ApplicationENV } from '../constant/application';
-
 /**
  * HandleError Class provides a centralized error handling mechanism for Express applications.
  * 
@@ -19,6 +18,7 @@ import { ApplicationENV } from '../constant/application';
  *   user privacy.
  * - Traceability: In development, detailed error information is included to assist with debugging.
  */
+
 export default class HandleError {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public static errorHandler = (err: ThttpError, req: Request, res: Response, _next: NextFunction) => {
@@ -26,6 +26,9 @@ export default class HandleError {
         statusCode = err.statusCode || 500;
 
         const isProduction = config.ENV === ApplicationENV.PRODUCTION;
+
+        // Handle Prisma errors in production mode
+        // const isPrismaError = err instanceof  Prisma.PrismaClientKnownRequestError;
 
         const errObject = {
             success: false,
@@ -38,7 +41,7 @@ export default class HandleError {
             message: err.message,
             data: err.data || null,
             ...(isProduction ? {} : { trace: err instanceof Error ? { Error: err.stack } : null }),
-        }
+        };
 
         logger.info('Controller Error', {
             meta: errObject,
