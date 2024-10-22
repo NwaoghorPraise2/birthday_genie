@@ -86,6 +86,18 @@ export class AuthController {
         return httpResponse.ok(req, res, 200, responseMessage.SUCCESS)
     })
 
+    public static resendEmailVerification = asyncHandler.handle( async(req: Request, res:Response, _next:NextFunction): Promise<void> => {
+        const {email} = req.params;
+        await AuthService.doResendEmailVerificationEmail(email)
+        return httpResponse.ok(req, res, 200, responseMessage.SUCCESS)
+    })
+
+    public static resendForgotPasswordEmail = asyncHandler.handle( async(req: Request, res:Response, _next:NextFunction): Promise<void> => {
+        const {email} = req.params;
+        await AuthService.doForgotPassword(email)
+        return httpResponse.ok(req, res, 200, responseMessage.SUCCESS)
+    })
+
     public static logOut = asyncHandler.handle( async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
         const userId = req.user as string;
         await AuthService.doLogout(userId);

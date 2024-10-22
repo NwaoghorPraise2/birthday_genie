@@ -146,6 +146,21 @@ export class AuthService {
 
     }
 
+    public static async doResendEmailVerificationEmail(email: string){
+        const user: IUser = await AuthRepository.getUserByEmail(email);
+        if(!user) throw new GlobalError(400, responseMessage.NOT_FOUND(`User with ${email} `));
+
+        const {verificationToken, verificationTokenExpiresAt} = generateTokens;
+
+        await AuthRepository.updateVerificationToken(user.id as string, verificationToken, verificationTokenExpiresAt);
+
+        emailEmitter.emit('Verification-Email', {
+            email: user.email,
+            name: user.username,
+            verificationToken
+        });
+    }
+
     public static async doLogout(userId: string){
         await AuthRepository.updateRefreshToken(userId, null);
     }

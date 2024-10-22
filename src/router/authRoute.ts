@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { AuthController } from '../controller/authController';
 import Validator from '../middlewares/validator';
-import { ForgotPassword, Password, ResetPassword, User, UserLogin } from '../utils/validation/validate';
+import { ForgotPassword, Password, ResetPassword, token, User, UserLogin } from '../utils/validation/validate';
 import { singleUpload } from '../utils/filehandler/fileUpload';
 import Auth  from '../middlewares/authMiddleware';
 
@@ -192,10 +192,15 @@ class AuthRouter {
         this.router.post(
             '/reset-password/:token', 
             Validator.validateRequest({
-                body: ResetPassword
+                body: ResetPassword,
+                params: token
             }), 
             AuthController.resetPassword
         );
+
+        this.router.post('/resend-verification-email/:email', Validator.validateRequest({ params: ForgotPassword }), AuthController.resendEmailVerification);
+
+        this.router.post('/resend-forgot-password-email/:email', Validator.validateRequest({ params: ForgotPassword }), AuthController.resendForgotPasswordEmail);
         
     }
 }

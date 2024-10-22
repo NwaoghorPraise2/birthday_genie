@@ -137,5 +137,17 @@ export class AuthRepository {
             }
         });
     }
+
+    public static async updateVerificationToken(id: string, verificationToken: string | null, verificationTokenExpiresAt: Date | null) {
+        return await db.user.update({
+            where: {
+                id: id
+            },
+            data: {
+                verificationToken,
+                verificationTokenExpiresAt
+            }
+        });
+    }
     
 }

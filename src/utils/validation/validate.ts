@@ -31,3 +31,7 @@ export const ForgotPassword = z.object({
 export const ResetPassword = z.object({
     newPassword: z.string().min(8, 'Password must 8 Characters and above!').trim(),
 })
+
+export const token = z.object({
+    token: z.string().trim()
+})

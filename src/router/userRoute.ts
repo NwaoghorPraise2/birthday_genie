@@ -1,3 +1,4 @@
+import { UserController } from '../controller/userController';
 import {Router} from 'express';
 
 class UserRouter {
@@ -9,9 +10,7 @@ class UserRouter {
     }
 
     private run() {
-        this.router.get('/', (req, res) => {
-            res.send('Hello World');
-        });
+        this.router.get('/users', UserController.getAllUsers);
     }
 }
 
