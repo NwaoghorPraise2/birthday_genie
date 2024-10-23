@@ -6,30 +6,48 @@ const toSentenceCase = (str: string) => {
 };
 
 export const User = z.object({
-    username: z.string().trim().transform(toSentenceCase),
-    password: z.string().min(8, 'Password must 8 Characters and above!').trim(),
-    email: z.string().email().trim().toLowerCase(),
+    username: z.string(({
+        message: 'Username must be a string and it is required.'
+    })).trim().min(8, 'Username must be 8 character and above!').transform(toSentenceCase),
+    password: z.string(({
+        message: 'Password must be a string and it is required.'
+    })).min(8, 'Password must 8 Characters and above!').trim(),
+    email: z.string(({
+        message: 'Email must be a string and it is required.'
+    })).email().trim().toLowerCase(),
     name: z.string().trim().transform(toSentenceCase).optional(),
     phoneNumber: z.string().trim().optional(),
     profilePic: z.string().trim().optional(),
 })
 
 export const UserLogin = z.object({
-    email: z.string().email().trim().toLowerCase(),
-    password: z.string().min(8, 'Password must 8 Characters and above!').trim()
+    email: z.string(({
+        message: 'Email must be a string and it is required.'
+    })).email().trim().toLowerCase(),
+    password: z.string(({
+        message: 'Password must be a string and it is required.'
+    })).min(8, 'Password must 8 Characters and above!').trim()
 })
 
 export const Password = z.object({
-    oldPassword: z.string().min(8, 'Password must 8 Characters and above!').trim(),
-    newPassword: z.string().min(8, 'Password must 8 Characters and above!').trim(),
+    oldPassword: z.string(({
+        message: 'Password must be a string and it is required.'
+    })).min(8, 'Password must 8 Characters and above!').trim(),
+    newPassword: z.string(({
+        message: 'Password must be a string and it is required.'
+    })).min(8, 'Password must 8 Characters and above!').trim(),
 })
 
 export const ForgotPassword = z.object({
-    email: z.string().email().trim().toLowerCase(),
+    email: z.string(({
+        message: 'Email must be a string and it is required.'
+    })).email().trim().toLowerCase(),
 })
 
 export const ResetPassword = z.object({
-    newPassword: z.string().min(8, 'Password must 8 Characters and above!').trim(),
+    newPassword: z.string(({
+        message: 'Password must be a string and it is required.'
+    })).min(8, 'Password must 8 Characters and above!').trim(),
 })
 
 export const token = z.object({

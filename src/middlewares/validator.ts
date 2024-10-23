@@ -38,7 +38,7 @@ export default class Validator {
                 next();
             } catch (error) {
                 if (error instanceof ZodError) {
-                    const specificMessages = error.errors.map(err => err.message);    //Make better mesaage for error.
+                    const specificMessages = error.errors.map(err => err.message); 
                     return next(new GlobalError(422, specificMessages.join(', ')));
                 }
                 next(error);
