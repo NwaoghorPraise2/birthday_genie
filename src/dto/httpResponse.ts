@@ -1,17 +1,17 @@
-import { Request, Response } from 'express';
-import { ThttpResponse } from '../types/types';
-import { ApplicationENV } from '../constant/application';
+import {Request, Response} from 'express';
+import {ThttpResponse} from '../types/types';
+import {ApplicationENV} from '../constant/application';
 import config from '../config/config';
 import logger from '../utils/logger';
 
 /**
  * HttpResponses Class provides standardized methods for sending HTTP responses.
- * 
+ *
  * - Response Standardization: Ensures a consistent structure across all responses in the application.
  * - Logging: Logs outgoing responses for easier debugging and monitoring of API behavior.
  * - Security Consideration: In production environments, sensitive information such as client IP addresses are removed from responses.
  * - Customizability: Supports default status codes while allowing customization of response messages and payloads.
- * 
+ *
  * Key Considerations:
  * - Response Consistency: All responses include fields such as success, statusCode, message, and data.
  * - Debugging and Auditing: Logs the details of each response to aid in identifying issues and understanding application flow.
@@ -28,8 +28,8 @@ class HttpResponses {
      * @param data - Any data to send in the response body
      */
     public ok(
-        req: Request, 
-        res: Response, 
+        req: Request,
+        res: Response,
         responseStatusCode: number = 200, // Default status code to 200 for success
         responseMessage: string, // Message to include in the response
         data?: unknown, // Data to include in the response
@@ -66,3 +66,4 @@ class HttpResponses {
 }
 
 export default new HttpResponses();
+

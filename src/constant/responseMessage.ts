@@ -1,9 +1,7 @@
-
-
 export default {
     SUCCESS: `The operation has been successful`,
     SOMETHING_WENT_WRONG: `Something went wrong`,
-    NOT_FOUND: (entity:string)=> `${entity} not found` ,
+    NOT_FOUND: (entity: string) => `${entity} not found`,
     TOO_MANY_REQUEST: `Too many requests! Please try agaion after some time.`,
     UNAUTHORIZED: `You are not authorized to perform this action`,
     INVALID_CREDENTIALS: `Invalid credentials`,
@@ -25,8 +23,8 @@ export default {
     USERNAME_ALREADY_EXISTS: `Username already exists`,
     INVALID_NAME: `Invalid name`,
     NAME_ALREADY_EXISTS: `Name already exists`,
-    ALREADY_VERIFIED: `User is already verified`, 
+    ALREADY_VERIFIED: `User is already verified`,
     NOT_VERIFIED: `User is not verified`,
     INVALID_DATE: `Invalid date`,
-    USER_LOGGED_OUT: `User has been logged out`   
-}
+    USER_LOGGED_OUT: `User has been logged out`
+};

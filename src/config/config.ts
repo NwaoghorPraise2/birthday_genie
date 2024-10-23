@@ -1,4 +1,3 @@
-
 export default {
     // General
     APP_NAME: process.env.APP_NAME,
