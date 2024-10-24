@@ -1,13 +1,12 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import bcrypt from 'bcrypt';
 import config from '../config/config';
 
 /**
  * PasswordHelpers Class provides utility methods for password hashing and comparison.
- * 
+ *
  * - Hashing: Generates a hashed version of a plaintext password using bcrypt.
  * - Comparison: Compares a plaintext password with a hashed password to verify authenticity.
- * 
+ *
  * Key Considerations:
  * - Security: Utilizes bcrypt, a widely adopted hashing library, to ensure passwords are securely stored.
  * - Salt Configuration: The number of salt rounds used for hashing is configurable through environment variables.
@@ -37,3 +36,4 @@ class HashingService {
 }
 
 export default HashingService;
+

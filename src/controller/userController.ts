@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import responseMessage from '../constant/responseMessage';
 import httpResponse from '../dto/httpResponse';
 import UseService from '../services/userService';
@@ -12,3 +10,4 @@ export class UserController {
         httpResponse.ok(req, res, 200, responseMessage.SUCCESS, data);
     });
 }
+

@@ -3,7 +3,7 @@
 import db from '../config/db';
 
 export class UserRepository {
-    public static async getAllUser(){
+    public static async getAllUser() {
         return await db.user.findMany();
     }
 }
