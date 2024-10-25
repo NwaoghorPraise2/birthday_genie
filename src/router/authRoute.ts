@@ -628,6 +628,8 @@ class AuthRouter {
             Validator.validateRequest({params: ForgotPassword}),
             AuthController.resendForgotPasswordEmail
         );
+
+        this.router.post('/oauth-request', AuthController.getOAuthRequestURL);
     }
 }
 

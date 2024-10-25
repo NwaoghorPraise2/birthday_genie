@@ -21,6 +21,12 @@ export class AuthService {
         return {access_token, refresh_token};
     }
 
+    private static async getOAuthUserData(access_token: string) {
+        const response = await fetch(`https://www.googleapis.com/oauth2/v3/userinfo?access_token=${access_token}`);
+        const data = await response.json();
+        return data;
+    }
+
     public static async doUserRegistration(user: IUser) {
         const isUserExists: unknown = await AuthRepository.getUserByEmailOrUsername(user.email, user.username);
         if (isUserExists) throw new GlobalError(409, responseMessage.USER_ALREADY_EXISTS);
@@ -163,7 +169,33 @@ export class AuthService {
         });
     }
 
+    public static dogetOAuthRequestURL() {
+        const oauthClient = AuthService.JWTService.getOAuthClient();
+        const authorizationUrl = oauthClient.generateAuthUrl({
+            access_type: 'offline',
+            scope: 'https://www.googleapis.com/auth/userinfo.profile  openid ',
+            prompt: 'consent'
+        });
+        if (!authorizationUrl) throw new GlobalError(500, responseMessage.SOMETHING_WENT_WRONG);
+        logger.info(`authorizationUrl: ${authorizationUrl}`);
+        return authorizationUrl;
+    }
+
+    public static async doLoginWithOAuth(code: string) {
+        const oauthClient = AuthService.JWTService.getOAuthClient();
+        const result = await oauthClient.getToken(code);
+        if (!result) throw new GlobalError(500, responseMessage.SOMETHING_WENT_WRONG);
+        oauthClient.setCredentials(result.tokens);
+        logger.info(`result.tokens: ${JSON.stringify(result.tokens)}`);
+        const user = oauthClient.credentials;
+        logger.info(`user: ${JSON.stringify(user)}`);
+        const userData = await this.getOAuthUserData(user.access_token as string);
+        if (!userData) throw new GlobalError(500, responseMessage.SOMETHING_WENT_WRONG);
+        return userData;
+    }
+
     public static async doLogout(userId: string) {
         await AuthRepository.updateRefreshToken(userId, null);
     }
 }
+

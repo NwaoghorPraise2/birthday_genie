@@ -31,5 +31,10 @@ export default {
     SMTP_USER: process.env.SMTP_USER,
     SMTP_PASS: process.env.SMTP_PASS,
     SMTP_FROM: process.env.SMTP_FROM,
-    EMAIL_FROM: process.env.EMAIL_FROM
+    EMAIL_FROM: process.env.EMAIL_FROM,
+
+    //OAUTH
+    GOOGLE_CLIENT_ID: process.env.CLIENT_ID,
+    GOOGLE_CLIENT_SECRET: process.env.CLIENT_SECRET,
+    GOOGLE_CALLBACK_URL: process.env.CALLBACK_URL
 };

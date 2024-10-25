@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import responseMessage from '../constant/responseMessage';
 import httpResponse from '../dto/httpResponse';
 import UseService from '../services/userService';

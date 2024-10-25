@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import responseMessage from '../constant/responseMessage';
 import {AuthService} from '../services/authService';
 import {IUser, IUserLogin} from '../types/auth.types';
@@ -7,6 +10,7 @@ import asyncHandler from '../utils/asyncHandler';
 import logger from '../utils/logger';
 import GlobalError from '../utils/HttpsErrors';
 import {CookiesHandler} from '../utils/handleCookies';
+import config from '../config/config';
 
 export class AuthController {
     /**
@@ -193,6 +197,21 @@ export class AuthController {
         this.clearCookies(res);
         logger.info(`User logged out: ${userId}`);
         return httpResponse.ok(req, res, 200, responseMessage.USER_LOGGED_OUT);
+    });
+
+    public static getOAuthRequestURL = (req: Request, res: Response, _next: NextFunction) => {
+        res.header('Access-Control-Allow-Origin', config.FRONTEND_URL);
+        res.header('Referrer-Policy', 'no-referrer-when-downgrade');
+        res.header('Access-Control-Allow-Credentials', 'true');
+        const url = AuthService.dogetOAuthRequestURL();
+        return httpResponse.ok(req, res, 200, responseMessage.SUCCESS, url);
+    };
+
+    public static loginWithOAuth = asyncHandler.handle(async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
+        const {code} = req.query;
+        const result = await AuthService.doLoginWithOAuth(code as string);
+        // this.setCookies(res, result.id as string, access_token, refresh_token);
+        return httpResponse.ok(req, res, 200, responseMessage.SUCCESS, result);
     });
 }
 

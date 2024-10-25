@@ -1,6 +1,7 @@
-import { DecodedToken } from '@/types/auth.types';
+import {DecodedToken} from '@/types/auth.types';
 import config from '../config/config';
 import jwt from 'jsonwebtoken';
+import {OAuth2Client} from 'google-auth-library';
 
 class JWTService {
     private static instance: JWTService;
@@ -9,7 +10,7 @@ class JWTService {
     private refreshExpiresIn: string;
     private refreshSecret: string;
 
-    private constructor() { 
+    private constructor() {
         this.secret = config.JWT_ACCESS_SECRET as string;
         this.expiresIn = config.JWT_ACCESS_EXPIRES_IN as string;
         this.refreshSecret = config.JWT_REFRESH_SECRET as string;
@@ -23,21 +24,25 @@ class JWTService {
         return JWTService.instance;
     }
 
-    public signAccessToken(payload: object): string { 
-            return jwt.sign(payload, this.secret, { expiresIn: this.expiresIn });
+    public signAccessToken(payload: object): string {
+        return jwt.sign(payload, this.secret, {expiresIn: this.expiresIn});
     }
 
-    public verifyAccessToken(token: string){
-            return jwt.verify(token, this.secret) as DecodedToken;
+    public verifyAccessToken(token: string) {
+        return jwt.verify(token, this.secret) as DecodedToken;
     }
 
     public signRefreshToken(payload: object): string {
-            return jwt.sign(payload, this.refreshSecret, { expiresIn: this.refreshExpiresIn });
+        return jwt.sign(payload, this.refreshSecret, {expiresIn: this.refreshExpiresIn});
     }
 
-    public verifyRefreshToken(token: string){
-            return jwt.verify(token, this.refreshSecret) as DecodedToken;
+    public verifyRefreshToken(token: string) {
+        return jwt.verify(token, this.refreshSecret) as DecodedToken;
+    }
+    public getOAuthClient() {
+        return new OAuth2Client(config.GOOGLE_CLIENT_ID, config.GOOGLE_CLIENT_SECRET, config.GOOGLE_CALLBACK_URL);
     }
 }
 
 export default JWTService;
+
