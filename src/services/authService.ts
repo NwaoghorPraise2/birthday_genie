@@ -5,7 +5,7 @@ import responseMessage from '../constant/responseMessage';
 import JWTService from '../utils/jwt';
 import emailEmitter from '../utils/mail/emitter';
 import generateTokens from '../utils/tokenGenerator';
-import {DecodedToken, IUser, IUserLogin} from '../types/auth.types';
+import {DecodedToken, GoogleUserData, IUser, IUserLogin} from '../types/auth.types';
 import logger from '../utils/logger';
 import HashingService from '../utils/hash';
 
@@ -138,7 +138,7 @@ export class AuthService {
     }
 
     public static async doResetPassword(token: string, newPassword: string) {
-        const user: IUser = await AuthRepository.getUserByResetPasswordToken(token);
+        const user: IUser = (await AuthRepository.getUserByResetPasswordToken(token)) as IUser;
         if (!user) throw new GlobalError(400, responseMessage.NOT_FOUND(`Expired Token or Invalid Token`));
 
         const hashedNewPassword = await HashingService.doHashing(newPassword);
@@ -183,15 +183,22 @@ export class AuthService {
 
     public static async doLoginWithOAuth(code: string) {
         const oauthClient = AuthService.JWTService.getOAuthClient();
-        const result = await oauthClient.getToken(code);
-        if (!result) throw new GlobalError(500, responseMessage.SOMETHING_WENT_WRONG);
-        oauthClient.setCredentials(result.tokens);
-        logger.info(`result.tokens: ${JSON.stringify(result.tokens)}`);
-        const user = oauthClient.credentials;
-        logger.info(`user: ${JSON.stringify(user)}`);
-        const userData = await this.getOAuthUserData(user.access_token as string);
-        if (!userData) throw new GlobalError(500, responseMessage.SOMETHING_WENT_WRONG);
-        return userData;
+        const {tokens} = await oauthClient.getToken(code);
+        if (!tokens) throw new GlobalError(404, responseMessage.NOT_FOUND('Tokens'));
+        oauthClient.setCredentials(tokens);
+        const result = oauthClient.credentials;
+        const userData = (await this.getOAuthUserData(result.access_token as string)) as GoogleUserData;
+        if (!userData) throw new GlobalError(404, responseMessage.NOT_FOUND('User Data'));
+        const user = await AuthRepository.upSertUser(
+            userData.email,
+            `${userData.family_name} ${userData.given_name}`,
+            userData.sub,
+            true,
+            userData.name
+        );
+        const payload = {id: user.id as string};
+        const {access_token, refresh_token} = await this.generateAcccesAndRefreshToken(payload);
+        return {access_token, refresh_token, user};
     }
 
     public static async doLogout(userId: string) {

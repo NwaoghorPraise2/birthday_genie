@@ -8,7 +8,6 @@ import GlobalError from './utils/HttpsErrors';
 import SwaggerDocs from './utils/swagger';
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
-import oauthRouter from './router/oauth';
 
 /**
  * The App class configures and initializes the Express application.
@@ -44,12 +43,11 @@ class App {
         this.app.use(cookieParser());
 
         this.app.use('/api', apiRouter);
-        this.app.use('/auth', oauthRouter);
 
         new SwaggerDocs(this.app);
 
         // Handle unmatched routes (404)
-        this.app.use('*', (req: Request, res: Response, next: NextFunction) => {
+        this.app.use('*', (_req: Request, _res: Response, next: NextFunction) => {
             return next(new GlobalError(404, responseMessage.NOT_FOUND('Route')));
         });
 

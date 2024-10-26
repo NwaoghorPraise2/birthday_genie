@@ -210,8 +210,9 @@ export class AuthController {
     public static loginWithOAuth = asyncHandler.handle(async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
         const {code} = req.query;
         const result = await AuthService.doLoginWithOAuth(code as string);
-        // this.setCookies(res, result.id as string, access_token, refresh_token);
-        return httpResponse.ok(req, res, 200, responseMessage.SUCCESS, result);
+        this.setCookies(res, result.user.id as string, result.access_token, result.refresh_token);
+        logger.info(`User logged in with OAuth: ${result.user.id}`);
+        res.redirect(config.ClIENT_URL as string);
     });
 }
 

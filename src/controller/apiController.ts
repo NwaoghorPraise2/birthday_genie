@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {NextFunction, Request, Response} from 'express';
 import httpResponse from '../dto/httpResponse';
 import responseMessage from '../constant/responseMessage';
@@ -46,6 +48,15 @@ class ApiController {
 
             // Send health data response
             httpResponse.ok(req, res, 200, responseMessage.SUCCESS, healthData);
+        } catch (err) {
+            // Pass error to global error handler
+            next(new GlobalError(500, `Error`));
+        }
+    };
+
+    public getClient = (req: Request, res: Response, next: NextFunction): void => {
+        try {
+            httpResponse.ok(req, res, 200, 'welcome to Birthday Genie');
         } catch (err) {
             // Pass error to global error handler
             next(new GlobalError(500, `Error`));

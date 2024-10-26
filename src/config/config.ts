@@ -7,6 +7,7 @@ export default {
     APP_VERSION: process.env.APP_VERSION,
     FRONTEND_URL: process.env.FRONTEND_URL,
     BASE_URL: process.env.BASE_URL,
+    ClIENT_URL: process.env.ClIENT_URL,
 
     // Database
     POSTGRES_URL: process.env.POSTGRES_URL,
@@ -38,3 +39,4 @@ export default {
     GOOGLE_CLIENT_SECRET: process.env.CLIENT_SECRET,
     GOOGLE_CALLBACK_URL: process.env.CALLBACK_URL
 };
+

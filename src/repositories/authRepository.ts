@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 import db from '../config/db';
-import {IUser} from '../types/auth.types';
+import {GoogleUserData, IUser} from '../types/auth.types';
 
 export class AuthRepository {
     /**
@@ -182,7 +182,11 @@ export class AuthRepository {
      * @param {Date | null} resetPasswordTokenExpiresAt - The expiration date of the token.
      * @returns {Promise<IUser>} The updated user object.
      */
-    public static async updateResetPasswordToken(id: string, resetPasswordToken: string | null, resetPasswordTokenExpiresAt: Date | null) {
+    public static async updateResetPasswordToken(
+        id: string,
+        resetPasswordToken: string | null,
+        resetPasswordTokenExpiresAt: Date | null
+    ): Promise<IUser> {
         return await db.user.update({
             where: {
                 id: id
@@ -199,7 +203,7 @@ export class AuthRepository {
      * @param {string} token - The reset password token.
      * @returns {Promise<IUser | null>} The user object or null if not found.
      */
-    public static async getUserByResetPasswordToken(token: string) {
+    public static async getUserByResetPasswordToken(token: string): Promise<IUser | null> {
         return await db.user.findFirst({
             where: {
                 resetPasswordToken: token,
@@ -217,7 +221,11 @@ export class AuthRepository {
      * @param {Date | null} verificationTokenExpiresAt - The expiration date of the token.
      * @returns {Promise<IUser>} The updated user object.
      */
-    public static async updateVerificationToken(id: string, verificationToken: string | null, verificationTokenExpiresAt: Date | null) {
+    public static async updateVerificationToken(
+        id: string,
+        verificationToken: string | null,
+        verificationTokenExpiresAt: Date | null
+    ): Promise<IUser> {
         return await db.user.update({
             where: {
                 id: id
@@ -225,6 +233,23 @@ export class AuthRepository {
             data: {
                 verificationToken,
                 verificationTokenExpiresAt
+            }
+        });
+    }
+
+    public static async upSertUser(email: string, username: string, googleID?: string, isVerified?: boolean, name?: string): Promise<IUser> {
+        return await db.user.upsert({
+            where: {email},
+            update: {
+                googleID,
+                isVerified
+            },
+            create: {
+                email,
+                username,
+                name,
+                googleID,
+                isVerified
             }
         });
     }

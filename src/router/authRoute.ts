@@ -630,6 +630,8 @@ class AuthRouter {
         );
 
         this.router.post('/oauth-request', AuthController.getOAuthRequestURL);
+
+        this.router.get('/oauth', AuthController.loginWithOAuth);
     }
 }
 

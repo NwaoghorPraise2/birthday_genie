@@ -1,4 +1,4 @@
-import { JwtPayload } from 'jsonwebtoken';
+import {JwtPayload} from 'jsonwebtoken';
 
 export interface DecodedToken extends JwtPayload {
     id: string;
@@ -16,9 +16,9 @@ export interface IUser {
     isBlocked?: boolean;
     refreshToken?: string;
     resetPasswordToken?: string;
-	resetPasswordTokenExpiresAt?: Date;
+    resetPasswordTokenExpiresAt?: Date;
     verificationToken?: string;
-	verificationTokenExpiresAt?: Date;
+    verificationTokenExpiresAt?: Date;
 }
 
 export interface IUserLogin {
@@ -26,4 +26,12 @@ export interface IUserLogin {
     password: string;
 }
 
+export interface GoogleUserData {
+    email: string;
+    name: string;
+    picture: string;
+    sub: string;
+    given_name: string;
+    family_name: string;
+}
 
