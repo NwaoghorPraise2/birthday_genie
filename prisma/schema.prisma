@@ -14,7 +14,7 @@ model User {
   name String?
   email String @unique
   phoneNumber String?
-  password String 
+  password String? 
   profilePic String?
   refreshToken String?
   createdAt   DateTime @default(now()) @map("created_at")

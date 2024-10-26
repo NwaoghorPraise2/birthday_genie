@@ -14,6 +14,7 @@ class Auth {
      * @param {NextFunction} next - Express next function
      */
     public static authenticate = (req: Request, res: Response, next: NextFunction) => {
+        logger.info(JSON.stringify(req.cookies));
         // Retrieve the token from the authorization header or cookies
         const token = req.headers?.authorization?.split(' ')[1] || (req.cookies?.access_token as string);
 

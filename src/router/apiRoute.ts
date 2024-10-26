@@ -3,6 +3,7 @@ import apiController from '../controller/apiController';
 import authRoutes from './authRoute';
 import userRoutes from './userRoute';
 import friendsRoute from './friendsRoute';
+import Auth from '../middlewares/authMiddleware';
 
 /**
  * AppRouter Class - Manages and defines the routes for the application.
@@ -66,7 +67,7 @@ class AppRouter {
          */
         this.router.get('/health', apiController.health);
 
-        this.router.get('/client', apiController.getClient);
+        this.router.get('/client', Auth.authenticate, apiController.getClient);
 
         // Auth routes are separated in another module
         this.router.use('/auth', authRoutes);

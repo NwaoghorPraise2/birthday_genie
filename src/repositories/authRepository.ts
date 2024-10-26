@@ -237,7 +237,14 @@ export class AuthRepository {
         });
     }
 
-    public static async upSertUser(email: string, username: string, googleID?: string, isVerified?: boolean, name?: string): Promise<IUser> {
+    public static async upSertUser(
+        email?: string,
+        username?: string,
+        googleID?: string,
+        isVerified?: boolean,
+        name?: string,
+        profilePic?: string
+    ): Promise<IUser> {
         return await db.user.upsert({
             where: {email},
             update: {
@@ -245,11 +252,12 @@ export class AuthRepository {
                 isVerified
             },
             create: {
-                email,
-                username,
-                name,
-                googleID,
-                isVerified
+                email: email,
+                username: username,
+                name: name,
+                googleID: googleID,
+                isVerified: isVerified,
+                profilePic: profilePic
             }
         });
     }

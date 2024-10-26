@@ -212,7 +212,17 @@ export class AuthController {
         const result = await AuthService.doLoginWithOAuth(code as string);
         this.setCookies(res, result.user.id as string, result.access_token, result.refresh_token);
         logger.info(`User logged in with OAuth: ${result.user.id}`);
-        res.redirect(config.ClIENT_URL as string);
+        return httpResponse.ok(
+            req,
+            res,
+            200,
+            responseMessage.SUCCESS,
+            {
+                redirectUrl: result.redirectUrl
+            },
+            result.access_token,
+            result.refresh_token
+        );
     });
 }
 

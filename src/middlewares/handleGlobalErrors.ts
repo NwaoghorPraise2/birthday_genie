@@ -3,7 +3,7 @@ import {ThttpError} from '../types/types';
 import logger from '../utils/logger';
 import config from '../config/config';
 import {ApplicationENV} from '../constant/application';
-import {PrismaClientInitializationError} from '@prisma/client/runtime/library';
+import {PrismaClientInitializationError, PrismaClientUnknownRequestError, PrismaClientValidationError} from '@prisma/client/runtime/library';
 /**
  * HandleError Class provides a centralized error handling mechanism for Express applications.
  *
@@ -29,8 +29,7 @@ export default class HandleError {
         const isProduction = config.ENV === ApplicationENV.PRODUCTION;
 
         // Handle Prisma errors in production mode
-        const isPrismaError = err instanceof PrismaClientInitializationError;
-
+        const isPrismaError = err instanceof PrismaClientInitializationError || PrismaClientUnknownRequestError || PrismaClientValidationError;
         const errObject = {
             success: false,
             statusCode: statusCode || 500,

@@ -8,6 +8,7 @@ import generateTokens from '../utils/tokenGenerator';
 import {DecodedToken, GoogleUserData, IUser, IUserLogin} from '../types/auth.types';
 import logger from '../utils/logger';
 import HashingService from '../utils/hash';
+import config from '../config/config';
 
 export class AuthService {
     private static JWTService = JWTService.getInstance();
@@ -173,7 +174,7 @@ export class AuthService {
         const oauthClient = AuthService.JWTService.getOAuthClient();
         const authorizationUrl = oauthClient.generateAuthUrl({
             access_type: 'offline',
-            scope: 'https://www.googleapis.com/auth/userinfo.profile  openid ',
+            scope: 'openid email profile',
             prompt: 'consent'
         });
         if (!authorizationUrl) throw new GlobalError(500, responseMessage.SOMETHING_WENT_WRONG);
@@ -188,17 +189,20 @@ export class AuthService {
         oauthClient.setCredentials(tokens);
         const result = oauthClient.credentials;
         const userData = (await this.getOAuthUserData(result.access_token as string)) as GoogleUserData;
+        logger.info(`userData: ${JSON.stringify(userData)}`);
         if (!userData) throw new GlobalError(404, responseMessage.NOT_FOUND('User Data'));
         const user = await AuthRepository.upSertUser(
             userData.email,
             `${userData.family_name} ${userData.given_name}`,
             userData.sub,
-            true,
-            userData.name
+            userData.email_verified,
+            userData.name,
+            userData.picture
         );
         const payload = {id: user.id as string};
+        const redirectUrl = config.ClIENT_URL;
         const {access_token, refresh_token} = await this.generateAcccesAndRefreshToken(payload);
-        return {access_token, refresh_token, user};
+        return {access_token, refresh_token, user, redirectUrl};
     }
 
     public static async doLogout(userId: string) {

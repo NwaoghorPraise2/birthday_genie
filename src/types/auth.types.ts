@@ -33,5 +33,6 @@ export interface GoogleUserData {
     sub: string;
     given_name: string;
     family_name: string;
+    email_verified: boolean;
 }
 

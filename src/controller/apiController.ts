@@ -56,7 +56,9 @@ class ApiController {
 
     public getClient = (req: Request, res: Response, next: NextFunction): void => {
         try {
-            httpResponse.ok(req, res, 200, 'welcome to Birthday Genie');
+            const access_token = req.cookies.access_token as string;
+            const refresh_token = req.cookies.refresh_token as string;
+            httpResponse.ok(req, res, 200, 'welcome to Birthday Genie', null, access_token, refresh_token);
         } catch (err) {
             // Pass error to global error handler
             next(new GlobalError(500, `Error`));
