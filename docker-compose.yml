@@ -25,7 +25,9 @@ services:
             - postgres
 
     api:
-        build: .
+        build:
+            context: .
+            dockerfile: Dockerfile
         command: pnpm docker:db:migrate # Use the new nodemon script
         ports:
             - '${PORT}:${PORT}'
