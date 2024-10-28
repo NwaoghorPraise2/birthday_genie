@@ -238,7 +238,7 @@ export class AuthRepository {
     }
 
     public static async upSertUser(
-        email?: string,
+        email: string,
         username?: string,
         googleID?: string,
         isVerified?: boolean,
@@ -248,8 +248,10 @@ export class AuthRepository {
         return await db.user.upsert({
             where: {email},
             update: {
-                googleID,
-                isVerified
+                name: name,
+                isVerified: isVerified,
+                profilePic: profilePic,
+                googleID: googleID
             },
             create: {
                 email: email,

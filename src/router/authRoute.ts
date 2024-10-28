@@ -1,7 +1,7 @@
 import {Router} from 'express';
 import {AuthController} from '../controller/authController';
 import Validator from '../middlewares/validator';
-import {ForgotPassword, Password, ResetPassword, token, User, UserLogin} from '../utils/validation/validate';
+import {ForgotPassword, Password, ResetPassword, token, User, UserLogin} from '../schema/userSchema';
 import {singleUpload} from '../utils/filehandler/fileUpload';
 import Auth from '../middlewares/authMiddleware';
 
