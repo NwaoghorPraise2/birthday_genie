@@ -6,7 +6,7 @@
     "scripts": {
         "build": "rimraf dist && swc ./src -d dist",
         "start": " NODE_ENV=production node dist/src/server.js",
-        "start:prod": "pnpm build && NODE_ENV=production node dist/src/server.js",
+        "start:prod": "pnpm build && NODE_ENV=production node dist/src/server.js && pnpm docker:db:migrate",
         "start:docker": "pnpm build && nodemon --watch ./src --exec 'node --env-file=.env --inspect=0.0.0.0 dist/src/server.js'",
         "start:docker@prod": "pnpm build && pnpm docker:db:migrate NODE_ENV=production node dist/src/server.js",
         "rebuild:api": "docker compose build api && docker compose rm --force --stop api && docker compose up -d api",
