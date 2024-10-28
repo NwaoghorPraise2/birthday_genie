@@ -1,51 +1,52 @@
 services:
-  postgres:
-    image: postgres:16-alpine3.20
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    ports:
-      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
-    networks:
-      - backend
+    postgres:
+        image: postgres:16-alpine3.20
+        environment:
+            POSTGRES_DB: ${POSTGRES_DB}
+            POSTGRES_USER: ${POSTGRES_USER}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+        ports:
+            - '${POSTGRES_PORT}:${POSTGRES_PORT}'
+        volumes:
+            - postgres-data:/var/lib/postgresql/data
+        networks:
+            - backend
 
-  pg-admin:
-    image: dpage/pgadmin4:8
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
-    ports:
-      - "${PGADMIN_LISTEN_PORT}:${PGPORT}"
-    networks:
-      - backend
-    depends_on:
-      - postgres
+    pg-admin:
+        image: dpage/pgadmin4:8
+        environment:
+            PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+            PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+        ports:
+            - '${PGADMIN_LISTEN_PORT}:${PGPORT}'
+        networks:
+            - backend
+        depends_on:
+            - postgres
 
-  api:
-    build: .
-    command: pnpm start:docker  # Use the new nodemon script
-    ports:
-      - "${PORT}:${PORT}"
-      - "${DEBUG_PORT}:${DEBUG_PORT}"
-    volumes:
-      - .:/usr/src/app               # Mount the current directory
-      - /usr/src/app/.pnpm-store      # Cache pnpm store
-      - /usr/src/app/node_modules     # Prevents reinstalling node_modules
-    environment:
-      POSTGRES_URL: ${POSTGRES_URL}
-      PORT: ${PORT}
-    networks:
-      - backend
-    depends_on:
-      - postgres
+    api:
+        build: .
+        command: pnpm start:docker@prod # Use the new nodemon script
+        ports:
+            - '${PORT}:${PORT}'
+            - '${DEBUG_PORT}:${DEBUG_PORT}'
+        volumes:
+            - .:/usr/src/app # Mount the current directory
+            - /usr/src/app/.pnpm-store # Cache pnpm store
+            - /usr/src/app/node_modules # Prevents reinstalling node_modules
+        environment:
+            POSTGRES_URL: ${POSTGRES_URL}
+            PORT: ${PORT}
+        networks:
+            - backend
+        depends_on:
+            - postgres
 
 volumes:
-  postgres-data:
-    driver: local
+    postgres-data:
+        driver: local
 
 networks:
-  backend:
-    driver: bridge
+    backend:
+        driver: bridge
+
