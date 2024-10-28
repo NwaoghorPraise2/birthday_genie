@@ -5,10 +5,10 @@
     "main": "server.js",
     "scripts": {
         "build": "rimraf dist && swc ./src -d dist",
-        "start": "node dist/src/server.js",
+        "start": " NODE_ENV=production node --env-file=.env  dist/src/server.js",
         "start:prod": "pnpm build && NODE_ENV=production node dist/src/server.js",
         "start:docker": "pnpm build && nodemon --watch ./src --exec 'node --env-file=.env --inspect=0.0.0.0 dist/src/server.js'",
-        "start:docker@prod": "pnpm build && cross-env NODE_ENV=production node dist/src/server.js",
+        "start:docker@prod": "pnpm build && NODE_ENV=production node --env-file=.env dist/src/server.js",
         "rebuild:api": "docker compose build api && docker compose rm --force --stop api && docker compose up -d api",
         "db:migrate": "pnpx prisma migrate dev --name init",
         "docker:db:migrate": "docker compose run api pnpm db:migrate",
