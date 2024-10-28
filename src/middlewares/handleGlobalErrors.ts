@@ -29,7 +29,7 @@ export default class HandleError {
         const isProduction = config.ENV === ApplicationENV.PRODUCTION;
 
         // Check if error is a Prisma error
-        const isPrismaError = err instanceof PrismaClientInitializationError || err instanceof PrismaClientUnknownRequestError;
+        const isPrismaError = err instanceof PrismaClientUnknownRequestError;
 
         const errObject = {
             success: false,
