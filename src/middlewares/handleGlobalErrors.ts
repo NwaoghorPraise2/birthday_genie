@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {Response, Request, NextFunction} from 'express';
 import {ThttpError} from '../types/types';
 import logger from '../utils/logger';
 import config from '../config/config';
 import {ApplicationENV} from '../constant/application';
-import {PrismaClientInitializationError, PrismaClientUnknownRequestError, PrismaClientValidationError} from '@prisma/client/runtime/library';
+import {PrismaClientInitializationError, PrismaClientUnknownRequestError} from '@prisma/client/runtime/library';
 /**
  * HandleError Class provides a centralized error handling mechanism for Express applications.
  *
@@ -21,24 +22,24 @@ import {PrismaClientInitializationError, PrismaClientUnknownRequestError, Prisma
  */
 
 export default class HandleError {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public static errorHandler = (err: ThttpError, req: Request, res: Response, _next: NextFunction) => {
         let {statusCode} = err;
-        statusCode = err.statusCode || 500;
+        statusCode = statusCode || 500;
 
         const isProduction = config.ENV === ApplicationENV.PRODUCTION;
 
-        // Handle Prisma errors in production mode
-        const isPrismaError = err instanceof PrismaClientInitializationError || PrismaClientUnknownRequestError || PrismaClientValidationError;
+        // Check if error is a Prisma error
+        const isPrismaError = err instanceof PrismaClientInitializationError || err instanceof PrismaClientUnknownRequestError;
+
         const errObject = {
             success: false,
-            statusCode: statusCode || 500,
+            statusCode: statusCode,
             request: {
                 method: req.method,
                 url: req.url,
                 ...(isProduction ? {} : {ip: req.ip || null})
             },
-            message: isProduction && isPrismaError ? 'Somothing went wrong' : err.message,
+            message: isProduction && isPrismaError ? 'Something went wrong' : err.message,
             data: err.data || null,
             ...(isProduction ? {} : {trace: err instanceof Error ? {Error: err.stack} : null})
         };
