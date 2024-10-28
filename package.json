@@ -5,7 +5,7 @@
     "main": "server.js",
     "scripts": {
         "build": "rimraf dist && swc ./src -d dist",
-        "start": " NODE_ENV=production node --env-file=.env  dist/src/server.js",
+        "start": " NODE_ENV=production node dist/src/server.js",
         "start:prod": "pnpm build && NODE_ENV=production node dist/src/server.js",
         "start:docker": "pnpm build && nodemon --watch ./src --exec 'node --env-file=.env --inspect=0.0.0.0 dist/src/server.js'",
         "start:docker@prod": "pnpm build && NODE_ENV=production node --env-file=.env dist/src/server.js",
