@@ -7,7 +7,7 @@ export default {
     APP_VERSION: process.env.APP_VERSION,
     FRONTEND_URL: process.env.FRONTEND_URL,
     BASE_URL: process.env.BASE_URL,
-    ClIENT_URL: process.env.ClIENT_URL,
+    ClIENT_URL: process.env.CLIENT_URL,
 
     // Database
     POSTGRES_URL: process.env.POSTGRES_URL,

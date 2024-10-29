@@ -26,7 +26,7 @@ services:
 
     api:
         build: .
-        command: pnpm start:prod # Use the new nodemon scrip
+        command: pnpm start:prod # Use the new nodemon script
         ports:
             - '${PORT}:${PORT}'
             - '${DEBUG_PORT}:${DEBUG_PORT}'
