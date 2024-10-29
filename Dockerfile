@@ -16,6 +16,7 @@ RUN pnpm install --frozen-lockfile --store .pnpm-store
 # Copy Prisma schema and generate
 COPY ./prisma/schema.prisma ./prisma/
 RUN pnpx prisma generate
+RUN pnpm docker:db:migrate
 
 # Copy the rest of the app
 COPY . .
