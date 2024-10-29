@@ -2,7 +2,7 @@
 FROM node:20-alpine AS base
 
 # Install pnpm globally
-RUN npm install -g pnpm npm-check-updates
+RUN npm install -g pnpm@8.15.5 npm-check-updates@17.1.3
 
 # Set the working directory
 WORKDIR /usr/src/app
