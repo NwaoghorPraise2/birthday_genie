@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
-
 import {createLogger, format, transports} from 'winston';
 import {ConsoleTransportInstance, FileTransportInstance} from 'winston/lib/winston/transports';
 import util from 'util';
@@ -125,4 +124,3 @@ class Logger {
 }
 
 export default new Logger().logger;
-
