@@ -9,5 +9,15 @@ class FriendsRepository {
             }
         });
     }
+
+    static async getFriends(userId: string) {
+        return await db.friends.findMany({
+            where: {
+                userId: userId
+            }
+        });
+    }
+
+    static async updateFriend() {}
 }
 
