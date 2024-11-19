@@ -24,4 +24,4 @@ COPY . .
 EXPOSE 3002
 
 # Default command to run the application in development mode
-CMD ["pnpm", "start:prod"]
+CMD ["pnpm", "start"]

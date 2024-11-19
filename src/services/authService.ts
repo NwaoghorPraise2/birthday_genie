@@ -54,11 +54,11 @@ export class AuthService {
     }
 
     public static async doLogin(user: IUserLogin) {
-        const User: IUser = await AuthRepository.getUserByEmail(user.email);
+        const User = await AuthRepository.getUserByEmail(user.email);
         if (!User) throw new GlobalError(400, responseMessage.NOT_FOUND(`User with ${user.email} `));
-        const isPasswordValid: boolean = await HashingService.verifyHashEntity(user.password, User.password);
+        const isPasswordValid: boolean = await HashingService.verifyHashEntity(user.password, User.password as string);
         if (!isPasswordValid) throw new GlobalError(400, responseMessage.INVALID_CREDENTIALS);
-        const payload = {id: User.id as string};
+        const payload = {id: User.id};
         const {access_token, refresh_token} = await this.generateAcccesAndRefreshToken(payload);
         const result: IUser = AuthRepository.userWithoutPassword(User);
         return {access_token, refresh_token, result};
@@ -154,14 +154,14 @@ export class AuthService {
     }
 
     public static async doResendEmailVerificationEmail(email: string) {
-        const user: IUser = await AuthRepository.getUserByEmail(email);
+        const user = await AuthRepository.getUserByEmail(email);
         if (!user) throw new GlobalError(400, responseMessage.NOT_FOUND(`User with ${email} `));
 
         if (user.isVerified === true) throw new GlobalError(400, responseMessage.ALREADY_VERIFIED);
 
         const {verificationToken, verificationTokenExpiresAt} = generateTokens;
 
-        await AuthRepository.updateVerificationToken(user.id as string, verificationToken, verificationTokenExpiresAt);
+        await AuthRepository.updateVerificationToken(user.id, verificationToken, verificationTokenExpiresAt);
 
         emailEmitter.emit('Verification-Email', {
             email: user.email,
@@ -174,7 +174,7 @@ export class AuthService {
         const oauthClient = AuthService.JWTService.getOAuthClient();
         const authorizationUrl = oauthClient.generateAuthUrl({
             access_type: 'offline',
-            scope: 'openid email profile',
+            scope: ['openid', 'email', 'profile'],
             prompt: 'consent'
         });
         if (!authorizationUrl) throw new GlobalError(500, responseMessage.SOMETHING_WENT_WRONG);
