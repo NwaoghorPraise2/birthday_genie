@@ -71,7 +71,7 @@ export class AuthService {
     }
 
     public static async verifyEmail(token: string) {
-        const user: IUser = await AuthRepository.getUserByVerificationToken(token);
+        const user = (await AuthRepository.getUserByVerificationToken(token)) as IUser;
 
         if (!user) throw new GlobalError(400, responseMessage.NOT_FOUND(`Expired Token or Verification Token`));
 
@@ -98,14 +98,14 @@ export class AuthService {
         logger.info(`decodedToken: ${decodedToken.id}`);
         if (!decodedToken) throw new GlobalError(401, responseMessage.INVALID_TOKEN);
 
-        const user: IUser = await AuthRepository.getUserByIdWithRefreshToken(decodedToken.id);
+        const user = await AuthRepository.getUserByIdWithRefreshToken(decodedToken.id);
         if (!user) throw new GlobalError(400, responseMessage.NOT_FOUND(`User with ${refreshToken} `));
 
         const isRefreshTokenValid = await HashingService.verifyHashEntity(refreshToken, user.refreshToken as string);
 
         if (!isRefreshTokenValid) throw new GlobalError(401, responseMessage.INVALID_TOKEN);
 
-        const payload = {id: user.id as string};
+        const payload = {id: user.id};
 
         const {access_token, refresh_token} = await this.generateAcccesAndRefreshToken(payload);
 
@@ -113,7 +113,7 @@ export class AuthService {
     }
 
     public static async doChangeUserPassword(userId: string, oldPassword: string, newPassword: string) {
-        const user: IUser = await AuthRepository.getUserByIdWithPassword(userId);
+        const user = (await AuthRepository.getUserByIdWithPassword(userId)) as IUser;
 
         const isPasswordValid: boolean = await HashingService.verifyHashEntity(oldPassword, user.password);
         if (!isPasswordValid) throw new GlobalError(400, responseMessage.INVALID_CREDENTIALS);
@@ -124,7 +124,7 @@ export class AuthService {
     }
 
     public static async doForgotPassword(email: string) {
-        const user: IUser = await AuthRepository.getUserByEmail(email);
+        const user = (await AuthRepository.getUserByEmail(email)) as IUser;
         if (!user) throw new GlobalError(400, responseMessage.NOT_FOUND(`User with ${email} `));
 
         const {resetPasswordToken, resetPasswordTokenExpiresAt} = generateTokens;
@@ -199,7 +199,7 @@ export class AuthService {
             userData.name,
             userData.picture
         );
-        const payload = {id: user.id as string};
+        const payload = {id: user.id};
         const redirectUrl = config.ClIENT_URL;
         const {access_token, refresh_token} = await this.generateAcccesAndRefreshToken(payload);
         return {access_token, refresh_token, user, redirectUrl};

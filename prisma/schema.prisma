@@ -43,7 +43,7 @@ model Friends {
     preferedName String
     dateOfBirth DateTime
     phoneNumber String?
-    whatsappNumber String?
+    whatsappNumber String? //REMOVE THIS
     email String?
     relationship String?
     description String?

@@ -6,6 +6,7 @@ export interface DecodedToken extends JwtPayload {
 
 export interface IUser {
     id?: string;
+    googleId?: string;
     username: string;
     email: string;
     password: string;

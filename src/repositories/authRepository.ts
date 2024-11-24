@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 import db from '../config/db';
 import {GoogleUserData, IUser} from '../types/auth.types';
@@ -50,7 +49,7 @@ export class AuthRepository {
      * @returns {Promise<Omit<IUser, 'password' | 'refreshToken'>>} The created user object without sensitive information.
      */
     public static async createUser(user: IUser) {
-        const createdUser: Promise<IUser> = await db.user.create({
+        const createdUser = await db.user.create({
             data: {
                 ...user
             }
@@ -182,11 +181,7 @@ export class AuthRepository {
      * @param {Date | null} resetPasswordTokenExpiresAt - The expiration date of the token.
      * @returns {Promise<IUser>} The updated user object.
      */
-    public static async updateResetPasswordToken(
-        id: string,
-        resetPasswordToken: string | null,
-        resetPasswordTokenExpiresAt: Date | null
-    ): Promise<IUser> {
+    public static async updateResetPasswordToken(id: string, resetPasswordToken: string | null, resetPasswordTokenExpiresAt: Date | null) {
         return await db.user.update({
             where: {
                 id: id
@@ -203,7 +198,7 @@ export class AuthRepository {
      * @param {string} token - The reset password token.
      * @returns {Promise<IUser | null>} The user object or null if not found.
      */
-    public static async getUserByResetPasswordToken(token: string): Promise<IUser | null> {
+    public static async getUserByResetPasswordToken(token: string) {
         return await db.user.findFirst({
             where: {
                 resetPasswordToken: token,
@@ -221,11 +216,7 @@ export class AuthRepository {
      * @param {Date | null} verificationTokenExpiresAt - The expiration date of the token.
      * @returns {Promise<IUser>} The updated user object.
      */
-    public static async updateVerificationToken(
-        id: string,
-        verificationToken: string | null,
-        verificationTokenExpiresAt: Date | null
-    ): Promise<IUser> {
+    public static async updateVerificationToken(id: string, verificationToken: string | null, verificationTokenExpiresAt: Date | null) {
         return await db.user.update({
             where: {
                 id: id
@@ -237,14 +228,7 @@ export class AuthRepository {
         });
     }
 
-    public static async upSertUser(
-        email: string,
-        username?: string,
-        googleID?: string,
-        isVerified?: boolean,
-        name?: string,
-        profilePic?: string
-    ): Promise<IUser> {
+    public static async upSertUser(email: string, username?: string, googleID?: string, isVerified?: boolean, name?: string, profilePic?: string) {
         return await db.user.upsert({
             where: {email},
             update: {
@@ -255,7 +239,7 @@ export class AuthRepository {
             },
             create: {
                 email: email,
-                username: username,
+                username: username as string,
                 name: name,
                 googleID: googleID,
                 isVerified: isVerified,
