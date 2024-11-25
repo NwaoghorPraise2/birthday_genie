@@ -1,5 +1,5 @@
 import OpenAI from 'openai';
-class MessageService {
+export class MessageService {
     private openai: OpenAI;
     constructor() {
         this.openai = new OpenAI({

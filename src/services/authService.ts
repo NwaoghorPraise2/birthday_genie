@@ -31,17 +31,11 @@ export class AuthService {
     public static async doUserRegistration(user: IUser) {
         const isUserExists: unknown = await AuthRepository.getUserByEmailOrUsername(user.email, user.username);
         if (isUserExists) throw new GlobalError(409, responseMessage.USER_ALREADY_EXISTS);
-
         const hashedPassword = await HashingService.doHashing(user.password);
-
         const {verificationToken, verificationTokenExpiresAt} = generateTokens;
-
         const result = (await AuthRepository.createUser({...user, password: hashedPassword, verificationToken, verificationTokenExpiresAt})) as IUser;
-
         if (!result) throw new GlobalError(500, responseMessage.SOMETHING_WENT_WRONG);
-
         const payload = {id: result.id as string};
-
         const {access_token, refresh_token} = await this.generateAcccesAndRefreshToken(payload);
 
         emailEmitter.emit('Verification-Email', {
@@ -49,7 +43,6 @@ export class AuthService {
             name: result?.username,
             verificationToken: result?.verificationToken
         });
-
         return {access_token, refresh_token, result};
     }
 
