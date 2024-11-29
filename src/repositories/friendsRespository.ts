@@ -23,7 +23,7 @@ export class FriendsRepository {
         });
     }
 
-    static async getFriendsByUserId(userId: string) {
+    static async getFriends(userId: string) {
         return await db.friends.findMany({
             where: {
                 userId
@@ -34,10 +34,19 @@ export class FriendsRepository {
         });
     }
 
-    static async updateFriend(friend: IFriend, userId: string) {
+    static async getFriend(id: string, userId: string) {
+        return await db.friends.findFirst({
+            where: {
+                id,
+                userId
+            }
+        });
+    }
+
+    static async updateFriend(friendId: string, friend: IFriend, userId: string) {
         return await db.friends.update({
             where: {
-                id: friend.id,
+                id: friendId,
                 userId
             },
             data: {

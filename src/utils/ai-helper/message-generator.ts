@@ -1,9 +1,10 @@
+import config from '../../config/config';
 import OpenAI from 'openai';
 export class MessageService {
     private openai: OpenAI;
     constructor() {
         this.openai = new OpenAI({
-            apiKey: process.env.OPENAI_API_KEY
+            apiKey: config.OPEN_AI_SECRET
         });
     }
 

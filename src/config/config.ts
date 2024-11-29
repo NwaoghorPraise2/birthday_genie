@@ -37,6 +37,9 @@ export default {
     //OAUTH
     GOOGLE_CLIENT_ID: process.env.CLIENT_ID,
     GOOGLE_CLIENT_SECRET: process.env.CLIENT_SECRET,
-    GOOGLE_CALLBACK_URL: process.env.CALLBACK_URL
+    GOOGLE_CALLBACK_URL: process.env.CALLBACK_URL,
+
+    //OPENAI
+    OPEN_AI_SECRET: process.env.OPEN_AI_SECRET
 };
 
