@@ -132,3 +132,5 @@ dist
 # Others
 .env.development
 .env.production
+
+.early.coverage

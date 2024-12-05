@@ -1,18 +1,17 @@
 {
     "extends": "@tsconfig/node20/tsconfig.json",
     "compilerOptions": {
-      "lib": ["esnext"],
-      "outDir": "./dist",
-      "forceConsistentCasingInFileNames": true,
-      "strict": true,
-      "baseUrl": ".",
-      "paths": {
-        "@/*": ["src/*"]
-      },
-      "allowJs": true,
-      "resolveJsonModule": true,
+        "lib": ["esnext"],
+        "outDir": "./dist",
+        "forceConsistentCasingInFileNames": true,
+        "strict": true,
+        "baseUrl": ".",
+        "paths": {
+            "@/*": ["src/*"]
+        },
+        "allowJs": true,
+        "resolveJsonModule": true
     },
-    "include": ["src", "src/config/migrate-mongoose-config.mjs", "scripts/seed.ts"],
+    "include": ["src", "src/config/migrate-mongoose-config.mjs", "scripts/seed.ts", "test/authService.early.test"],
     "exclude": ["node_modules", "**/*.test.ts", "**/*.spec.ts"]
-  }
-  
+}
