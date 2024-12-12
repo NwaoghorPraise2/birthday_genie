@@ -46,7 +46,7 @@ export class FriendController {
         const updatedfriend = await FriendService.doUpdateFriend(friendId, friend, userId as string);
         return httpResponse.ok(req, res, 200, responseMessage.SUCCESS, updatedfriend);
     });
-
+    ///RACTOR THIS DELETE OPERATION
     public static deleteFriend = asyncHandler.handle(async (req: Request, res: Response, _next: NextFunction) => {
         const userId = req.user;
         const friendId = req.params.id;
