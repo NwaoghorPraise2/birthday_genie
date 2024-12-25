@@ -1,4 +1,4 @@
-import { Express, Request, Response } from 'express';
+import {Express, Request, Response} from 'express';
 import swaggerJsDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import logger from './logger';
@@ -20,18 +20,18 @@ const options = {
                     bearerFormat: 'JWT'
                 }
             }
-        },
+        }
     },
     apis: ['./src/router/*.ts']
 };
 
 /**
  * SwaggerDocs class integrates Swagger documentation with the Express application.
- * 
+ *
  * - Swagger setup: Configures Swagger UI and serves the API documentation.
  * - JWT Authentication: Supports bearer token authentication through Swagger security schemes.
  * - Documentation routes: Exposes `/docs` for the UI and `/docs.json` for the raw JSON format of the API documentation.
- * 
+ *
  * Key Considerations:
  * - API Discoverability: Enhances API discoverability and documentation through a user-friendly Swagger interface.
  * - Security: Includes support for JWT-based authentication in the API documentation.
@@ -59,7 +59,8 @@ class SwaggerDocs {
             res.setHeader('Content-Type', 'application/json');
             res.send(this.swaggerSpec);
         });
-    }
+    };
 }
 
 export default SwaggerDocs;
+

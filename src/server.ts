@@ -4,7 +4,7 @@ import logger from './utils/logger';
 
 /**
  * Server class responsible for initializing and managing the application server lifecycle.
- * 
+ *
  * - Initializes the server port using the configuration value or defaults to 3000.
  * - Handles server startup, logging, and graceful shutdown on critical errors (unhandled rejections, uncaught exceptions, termination signals).
  * - Ensures the server's observability and robust error handling to prevent running in an unstable state.
@@ -17,7 +17,7 @@ class Server {
     }
 
     public startApp(): void {
-        const server = app.listen(this.port, '0.0.0.0');  
+        const server = app.listen(this.port, '0.0.0.0');
         (() => {
             try {
                 logger.info(`SERVER RUNNING ON ${this.port}`, {
@@ -26,9 +26,8 @@ class Server {
                         SERVER_URL: config.SERVER_URL
                     }
                 });
-
             } catch (error) {
-                logger.error('Failed to log server metadata:', { meta: error });
+                logger.error('Failed to log server metadata:', {meta: error});
 
                 server.close((error) => {
                     if (error) {
@@ -43,3 +42,4 @@ class Server {
 
 const server = new Server();
 server.startApp();
+
