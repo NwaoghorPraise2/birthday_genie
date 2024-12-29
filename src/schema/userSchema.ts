@@ -17,7 +17,11 @@ export const User = z.object({
         .string({
             message: 'Password must be a string and it is required.'
         })
-        .min(8, 'Password must 8 Characters and above!')
+        .min(12, 'Password must be at least 12 characters long.')
+        .regex(/[A-Z]/, 'Password must include at least one uppercase letter (A–Z).')
+        .regex(/[a-z]/, 'Password must include at least one lowercase letter (a–z).')
+        .regex(/[0-9]/, 'Password must include at least one number (0–9).')
+        .regex(/[!@#$%^&*(),.?":{}|<>]/, 'Password must include at least one special character (!, @, #, $, etc.).')
         .trim(),
     email: z
         .string({
@@ -43,7 +47,11 @@ export const UserLogin = z.object({
         .string({
             message: 'Password must be a string and it is required.'
         })
-        .min(8, 'Password must 8 Characters and above!')
+        .min(12, 'Password must be at least 12 characters long.')
+        .regex(/[A-Z]/, 'Password must include at least one uppercase letter (A–Z).')
+        .regex(/[a-z]/, 'Password must include at least one lowercase letter (a–z).')
+        .regex(/[0-9]/, 'Password must include at least one number (0–9).')
+        .regex(/[!@#$%^&*(),.?":{}|<>]/, 'Password must include at least one special character (!, @, #, $, etc.).')
         .trim()
 });
 
@@ -52,13 +60,21 @@ export const Password = z.object({
         .string({
             message: 'Password must be a string and it is required.'
         })
-        .min(8, 'Password must 8 Characters and above!')
+        .min(12, 'Password must be at least 12 characters long.')
+        .regex(/[A-Z]/, 'Password must include at least one uppercase letter (A–Z).')
+        .regex(/[a-z]/, 'Password must include at least one lowercase letter (a–z).')
+        .regex(/[0-9]/, 'Password must include at least one number (0–9).')
+        .regex(/[!@#$%^&*(),.?":{}|<>]/, 'Password must include at least one special character (!, @, #, $, etc.).')
         .trim(),
     newPassword: z
         .string({
             message: 'Password must be a string and it is required.'
         })
-        .min(8, 'Password must 8 Characters and above!')
+        .min(12, 'Password must be at least 12 characters long.')
+        .regex(/[A-Z]/, 'Password must include at least one uppercase letter (A–Z).')
+        .regex(/[a-z]/, 'Password must include at least one lowercase letter (a–z).')
+        .regex(/[0-9]/, 'Password must include at least one number (0–9).')
+        .regex(/[!@#$%^&*(),.?":{}|<>]/, 'Password must include at least one special character (!, @, #, $, etc.).')
         .trim()
 });
 
@@ -77,10 +93,15 @@ export const ResetPassword = z.object({
         .string({
             message: 'Password must be a string and it is required.'
         })
-        .min(8, 'Password must 8 Characters and above!')
+        .min(12, 'Password must be at least 12 characters long.')
+        .regex(/[A-Z]/, 'Password must include at least one uppercase letter (A–Z).')
+        .regex(/[a-z]/, 'Password must include at least one lowercase letter (a–z).')
+        .regex(/[0-9]/, 'Password must include at least one number (0–9).')
+        .regex(/[!@#$%^&*(),.?":{}|<>]/, 'Password must include at least one special character (!, @, #, $, etc.).')
         .trim()
 });
 
 export const token = z.object({
     token: z.string().trim()
 });
+

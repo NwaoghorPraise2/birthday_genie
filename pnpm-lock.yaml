@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@prisma/client':
-    specifier: ^5.21.1
-    version: 5.21.1(prisma@5.21.1)
+    specifier: ^6.1.0
+    version: 6.1.0(prisma@5.21.1)
   bcrypt:
     specifier: ^5.1.1
     version: 5.1.1
@@ -1409,9 +1409,9 @@ packages:
       fastq: 1.17.1
     dev: true
 
-  /@prisma/client@5.21.1(prisma@5.21.1):
-    resolution: {integrity: sha512-3n+GgbAZYjaS/k0M03yQsQfR1APbr411r74foknnsGpmhNKBG49VuUkxIU6jORgvJPChoD4WC4PqoHImN1FP0w==}
-    engines: {node: '>=16.13'}
+  /@prisma/client@6.1.0(prisma@5.21.1):
+    resolution: {integrity: sha512-AbQYc5+EJKm1Ydfq3KxwcGiy7wIbm4/QbjCKWWoNROtvy7d6a3gmAGkKjK0iUCzh+rHV8xDhD5Cge8ke/kiy5Q==}
+    engines: {node: '>=18.18'}
     requiresBuild: true
     peerDependencies:
       prisma: '*'

@@ -13,6 +13,7 @@ COPY package.json pnpm-lock.yaml ./
 # Install only production dependencies in a separate folder for production builds
 RUN pnpm install --frozen-lockfile --store .pnpm-store
 
+
 # Copy Prisma schema and generate
 COPY ./prisma/schema.prisma ./prisma/
 RUN pnpx prisma generate
