@@ -3,7 +3,7 @@ import GlobalError from '../utils/HttpsErrors';
 import {AuthRepository} from '../repositories/authRepository';
 import responseMessage from '../constant/responseMessage';
 import JWTService from '../utils/jwt';
-import emailEmitter from '../utils/mail/emitter';
+import EmailHandler from '../utils/mail/emitter';
 import generateTokens from '../utils/tokenGenerator';
 import {DecodedToken, GoogleUserData, IUser, IUserLogin} from '../types/auth.types';
 import logger from '../utils/logger';
@@ -12,6 +12,7 @@ import config from '../config/config';
 
 export class AuthService {
     private static JWTService = JWTService.getInstance();
+    private static EmailHander: EmailHandler = new EmailHandler();
 
     private static async generateAcccesAndRefreshToken(payload: {id: string}): Promise<{access_token: string; refresh_token: string}> {
         const userId = payload.id;
@@ -23,7 +24,7 @@ export class AuthService {
     }
 
     private static async getOAuthUserData(access_token: string) {
-        const response = await fetch(`https://www.googleapis.com/oauth2/v3/userinfo?access_token=${access_token}`);
+        const response = await fetch(`https://www.googleapis.com/oauth2/v3/userinfo?access_token=${access_token}`); //Refactor this to ENV
         const data = await response.json();
         return data;
     }
@@ -38,11 +39,12 @@ export class AuthService {
         const payload = {id: result.id as string};
         const {access_token, refresh_token} = await this.generateAcccesAndRefreshToken(payload);
 
-        emailEmitter.emit('Verification-Email', {
+        this.EmailHander.sendVerificationEmail({
             email: result?.email,
             name: result?.username,
-            verificationToken: result?.verificationToken
+            verificationToken: result?.verificationToken as string
         });
+
         return {access_token, refresh_token, result};
     }
 
@@ -76,7 +78,7 @@ export class AuthService {
 
         await AuthRepository.verifyUser(user.id as string, user.isVerified, user.verificationToken, user.verificationTokenExpiresAt);
 
-        emailEmitter.emit('Welcome-Email', {
+        await this.EmailHander.staticsendWelcomeEmail({
             email: user.email,
             name: user.username
         });
@@ -124,10 +126,10 @@ export class AuthService {
 
         await AuthRepository.updateResetPasswordToken(user.id as string, resetPasswordToken, resetPasswordTokenExpiresAt);
 
-        emailEmitter.emit('Reset-Password-Email', {
+        this.EmailHander.sendResetPasswordEmail({
             email: user.email,
             name: user.username,
-            resetPasswordToken
+            resetToken: resetPasswordToken
         });
     }
 
@@ -140,7 +142,7 @@ export class AuthService {
         await AuthRepository.updatePassword(user.id as string, hashedNewPassword);
         await AuthRepository.updateResetPasswordToken(user.id as string, null, null);
 
-        emailEmitter.emit('Reset-Password-Success-Email', {
+        this.EmailHander.sendResetPasswordSucessEmail({
             email: user.email,
             name: user.username
         });
@@ -156,10 +158,10 @@ export class AuthService {
 
         await AuthRepository.updateVerificationToken(user.id, verificationToken, verificationTokenExpiresAt);
 
-        emailEmitter.emit('Verification-Email', {
+        this.EmailHander.sendVerificationEmail({
             email: user.email,
             name: user.username,
-            verificationToken
+            verificationToken: verificationToken
         });
     }
 
