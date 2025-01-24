@@ -4,7 +4,7 @@ import logger from '../logger';
 import {VERIFICATION_EMAIL_TEMPLATE, PASSWORD_RESET_REQUEST_TEMPLATE, PASSWORD_RESET_SUCCESS_TEMPLATE} from './email templates/sendEmailTemps';
 
 export default class EmailEmitter {
-    private EmailServices!: EmailService;
+    private EmailServices: EmailService = new EmailService();
 
     public staticsendWelcomeEmail = async (data: {email: string; name: string}) => {
         const emailContent: string = await welcomeUsertemp.generateWelcomeEmail(data.email, data.name);
