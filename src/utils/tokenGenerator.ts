@@ -1,25 +1,29 @@
+import crypto from 'crypto';
+
 class GenerateVerificationToken {
-    static verificationToken(): string {
-        return Math.floor(1000 + Math.random() * 9000).toString();
-    }
+    // Arrow function to preserve lexical 'this' scope
+    static generateSecureToken = (length: number = 4): string => {
+        return crypto.randomBytes(length).toString('hex').slice(0, length);
+    };
 
-    static expiresAt(): Date {
-        return new Date(Date.now() + 24 * 60 * 60 * 1000);
-    }
+    static expiresAt = (expirationTime: number = 24 * 60 * 60 * 1000): Date => {
+        return new Date(Date.now() + expirationTime);
+    };
 
-    static resetPasswordToken(): string {
-        return Math.floor(1000 + Math.random() * 9000).toString();
-    }
+    static resetPasswordToken = (): string => {
+        return this.generateSecureToken(6); // 6 hex characters for more complexity
+    };
 
-    static resetPasswordTokenExpiresAt(): Date {
-        return new Date(Date.now() + 10 * 60 * 1000);
-    }
+    static resetPasswordTokenExpiresAt = (expirationTime: number = 10 * 60 * 1000): Date => {
+        return new Date(Date.now() + expirationTime);
+    };
 }
 
+// Exporting functions, which will now be arrow functions
 export default {
-    verificationToken: GenerateVerificationToken.verificationToken(),
-    verificationTokenExpiresAt: GenerateVerificationToken.expiresAt(),
-    resetPasswordToken: GenerateVerificationToken.resetPasswordToken(),
-    resetPasswordTokenExpiresAt: GenerateVerificationToken.resetPasswordTokenExpiresAt()
+    verificationToken: GenerateVerificationToken.generateSecureToken,
+    verificationTokenExpiresAt: GenerateVerificationToken.expiresAt,
+    resetPasswordToken: GenerateVerificationToken.resetPasswordToken,
+    resetPasswordTokenExpiresAt: GenerateVerificationToken.resetPasswordTokenExpiresAt
 };
 

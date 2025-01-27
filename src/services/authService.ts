@@ -33,8 +33,12 @@ export class AuthService {
         const isUserExists: unknown = await AuthRepository.getUserByEmailOrUsername(user.email, user.username);
         if (isUserExists) throw new GlobalError(409, responseMessage.USER_ALREADY_EXISTS);
         const hashedPassword = await HashingService.doHashing(user.password);
-        const {verificationToken, verificationTokenExpiresAt} = generateTokens;
-        const result = (await AuthRepository.createUser({...user, password: hashedPassword, verificationToken, verificationTokenExpiresAt})) as IUser;
+        const result = (await AuthRepository.createUser({
+            ...user,
+            password: hashedPassword,
+            verificationToken: generateTokens.verificationToken(),
+            verificationTokenExpiresAt: generateTokens.verificationTokenExpiresAt()
+        })) as IUser;
         if (!result) throw new GlobalError(500, responseMessage.SOMETHING_WENT_WRONG);
         const payload = {id: result.id as string};
         const {access_token, refresh_token} = await this.generateAcccesAndRefreshToken(payload);
@@ -82,8 +86,6 @@ export class AuthService {
             email: user.email,
             name: user.username
         });
-
-        return user;
     }
 
     public static async refreshToken(refreshToken: string) {
@@ -122,7 +124,8 @@ export class AuthService {
         const user = (await AuthRepository.getUserByEmail(email)) as IUser;
         if (!user) throw new GlobalError(400, responseMessage.NOT_FOUND(`User with ${email} `));
 
-        const {resetPasswordToken, resetPasswordTokenExpiresAt} = generateTokens;
+        const resetPasswordToken = generateTokens.resetPasswordToken();
+        const resetPasswordTokenExpiresAt = generateTokens.resetPasswordTokenExpiresAt();
 
         await AuthRepository.updateResetPasswordToken(user.id as string, resetPasswordToken, resetPasswordTokenExpiresAt);
 
@@ -154,7 +157,8 @@ export class AuthService {
 
         if (user.isVerified === true) throw new GlobalError(400, responseMessage.ALREADY_VERIFIED);
 
-        const {verificationToken, verificationTokenExpiresAt} = generateTokens;
+        const verificationToken = generateTokens.verificationToken();
+        const verificationTokenExpiresAt = generateTokens.verificationTokenExpiresAt();
 
         await AuthRepository.updateVerificationToken(user.id, verificationToken, verificationTokenExpiresAt);
 

@@ -96,8 +96,8 @@ export class AuthController {
      */
     public static verifyEmail = asyncHandler.handle(async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
         const {token} = req.body;
-        const result = await AuthService.verifyEmail(token as string);
-        return httpResponse.ok(req, res, 200, responseMessage.SUCCESS, result);
+        await AuthService.verifyEmail(token as string);
+        return httpResponse.ok(req, res, 200, responseMessage.SUCCESS);
     });
 
     /**
