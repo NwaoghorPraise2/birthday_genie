@@ -9,6 +9,7 @@ import {DecodedToken, GoogleUserData, IUser, IUserLogin} from '../types/auth.typ
 import logger from '../utils/logger';
 import HashingService from '../utils/hash';
 import config from '../config/config';
+import EncryptService from '@/utils/encrypter';
 
 export class AuthService {
     private static JWTService = JWTService.getInstance();
@@ -122,22 +123,30 @@ export class AuthService {
 
     public static async doForgotPassword(email: string) {
         const user = (await AuthRepository.getUserByEmail(email)) as IUser;
-        if (!user) throw new GlobalError(400, responseMessage.NOT_FOUND(`User with ${email} `));
+        if (!user) throw new GlobalError(400, responseMessage.IF_NOT_EMAIL);
 
         const resetPasswordToken = generateTokens.resetPasswordToken();
         const resetPasswordTokenExpiresAt = generateTokens.resetPasswordTokenExpiresAt();
 
+        const encryptedToken = EncryptService.encryptEntity(resetPasswordToken);
+
         await AuthRepository.updateResetPasswordToken(user.id as string, resetPasswordToken, resetPasswordTokenExpiresAt);
 
+        const resetLink = `${config.BASE_URL}/reset-password?token=${encodeURIComponent(encryptedToken)}`;
+
+        // REFACTOR EMAIL TO RELECT RESET LINK
         this.EmailHander.sendResetPasswordEmail({
             email: user.email,
             name: user.username,
-            resetToken: resetPasswordToken
+            resetToken: resetLink
         });
     }
 
     public static async doResetPassword(token: string, newPassword: string) {
-        const user: IUser = (await AuthRepository.getUserByResetPasswordToken(token)) as IUser;
+        const decryptedToken = EncryptService.decryptEntity(decodeURIComponent(token));
+
+        const user: IUser = (await AuthRepository.getUserByResetPasswordToken(decryptedToken)) as IUser;
+
         if (!user) throw new GlobalError(400, responseMessage.NOT_FOUND(`Expired Token or Invalid Token`));
 
         const hashedNewPassword = await HashingService.doHashing(newPassword);

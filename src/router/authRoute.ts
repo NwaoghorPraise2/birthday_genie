@@ -609,10 +609,9 @@ class AuthRouter {
         );
 
         this.router.post(
-            '/reset-password/:token',
+            '/reset-password',
             Validator.validateRequest({
-                body: ResetPassword,
-                params: token
+                body: ResetPassword
             }),
             AuthController.resetPassword
         );

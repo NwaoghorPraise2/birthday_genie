@@ -26,5 +26,7 @@ export default {
     ALREADY_VERIFIED: `User is already verified`,
     NOT_VERIFIED: `User is not verified`,
     INVALID_DATE: `Invalid date`,
-    USER_LOGGED_OUT: `User has been logged out`
+    USER_LOGGED_OUT: `User has been logged out`,
+    IF_NOT_EMAIL: `If the email exists, a reset link has been sent`
 };
+

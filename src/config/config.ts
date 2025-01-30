@@ -8,6 +8,7 @@ export default {
     FRONTEND_URL: process.env.FRONTEND_URL,
     BASE_URL: process.env.BASE_URL,
     ClIENT_URL: process.env.CLIENT_URL,
+    CRYPTO_SECRET: process.env.CRYPTO_SECRET,
 
     // Database
     POSTGRES_URL: process.env.POSTGRES_URL,
