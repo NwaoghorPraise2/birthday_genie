@@ -9,7 +9,7 @@ import {DecodedToken, GoogleUserData, IUser, IUserLogin} from '../types/auth.typ
 import logger from '../utils/logger';
 import HashingService from '../utils/hash';
 import config from '../config/config';
-import EncryptService from '@/utils/encrypter';
+import EncryptService from '../utils/encrypter';
 
 export class AuthService {
     private static JWTService = JWTService.getInstance();
@@ -132,7 +132,9 @@ export class AuthService {
 
         await AuthRepository.updateResetPasswordToken(user.id as string, resetPasswordToken, resetPasswordTokenExpiresAt);
 
-        const resetLink = `${config.BASE_URL}/reset-password?token=${encodeURIComponent(encryptedToken)}`;
+        const resetLink = `${config.BASE_URL}/api/auth/reset-password?token=${encodeURIComponent(encryptedToken)}`;
+
+        logger.info(`resetLink: ${resetLink}`);
 
         // REFACTOR EMAIL TO RELECT RESET LINK
         this.EmailHander.sendResetPasswordEmail({

@@ -7,7 +7,7 @@
         "strict": true,
         "baseUrl": ".",
         "paths": {
-            "@/*": ["src/*"]
+            "@/*": ["./src/*"]
         },
         "allowJs": true,
         "resolveJsonModule": true
@@ -15,3 +15,4 @@
     "include": ["src", "src/config/migrate-mongoose-config.mjs", "scripts/seed.ts", "test/authService.early.test"],
     "exclude": ["node_modules", "**/*.test.ts", "**/*.spec.ts"]
 }
+
