@@ -98,7 +98,8 @@ export const ResetPassword = z.object({
         .regex(/[a-z]/, 'Password must include at least one lowercase letter (a–z).')
         .regex(/[0-9]/, 'Password must include at least one number (0–9).')
         .regex(/[!@#$%^&*(),.?":{}|<>]/, 'Password must include at least one special character (!, @, #, $, etc.).')
-        .trim()
+        .trim(),
+    token: z.string().trim()
 });
 
 export const token = z.object({

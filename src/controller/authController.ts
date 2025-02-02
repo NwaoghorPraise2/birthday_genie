@@ -153,6 +153,8 @@ export class AuthController {
     public static resetPassword = asyncHandler.handle(async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
         const {newPassword, token} = req.body;
 
+        logger.info(`Resetting password for token: ${token}, : ${newPassword}`);
+
         await AuthService.doResetPassword(token as string, newPassword as string);
         logger.info(`Password reset successfully for token: ${token}`);
         return httpResponse.ok(req, res, 200, responseMessage.SUCCESS);

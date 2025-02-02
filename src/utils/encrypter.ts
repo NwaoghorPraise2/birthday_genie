@@ -16,7 +16,7 @@ export default class EncryptService {
     }
 
     static decryptEntity(token: string) {
-        if (token.length < 32) {
+        if (!token || token.length < 32) {
             throw new Error('Invalid encrypted token format');
         }
 
