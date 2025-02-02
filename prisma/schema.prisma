@@ -11,10 +11,13 @@ model User {
   id String @id @default(nanoid(16))
   googleID String? @unique
   username String @unique
+  dateOfBirth DateTime?
   name String?
   email String @unique
   phoneNumber String?
   password String? 
+  description String?
+  displayName String?
   profilePic String?
   refreshToken String?
   createdAt   DateTime @default(now()) @map("created_at")
@@ -27,6 +30,7 @@ model User {
 	verificationTokenExpiresAt DateTime?
   lastLogin DateTime @default(now())
   friends Friends[]
+  notifications Notifications[]
   role Roles @default(USER)
   accountSettings AccountSettings?
   @@map("users")
@@ -46,7 +50,7 @@ model Friends {
     phoneNumber String?
     whatsappNumber String? //REMOVE THIS
     email String?
-    relationship String?
+    relationship String? // Make this in tags
     description String?
     createdAt   DateTime @default(now()) @map("created_at")
     updatedAt   DateTime @updatedAt @map("updated_at")
@@ -67,7 +71,7 @@ model AccountSettings {
   birthdayNotificationTime Int?
   timeToSendBirthdayMessages DateTime?
   defaultMessageChannel MessageChannel? // Add Default
-  useNickNameInMessage Boolean @default(false)
+  useNickNameInMessage Boolean? @default(false)
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -79,4 +83,22 @@ enum MessageChannel {
   WHATSAPP
   EMAIL
   TEXTMESSAGE
+}
+
+model Notifications {
+  id String @id @default(nanoid(16))
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  tag String? // Optional tag to categorize notifications
+  title String
+  message String
+  isDeleted Boolean? @default(false)
+  isRead Boolean? @default(false)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("notifications")
+  @@index([createdAt])
 }
