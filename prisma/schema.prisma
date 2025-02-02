@@ -28,6 +28,7 @@ model User {
   lastLogin DateTime @default(now())
   friends Friends[]
   role Roles @default(USER)
+  accountSettings AccountSettings?
   @@map("users")
   @@index([createdAt])
 }
@@ -56,4 +57,26 @@ model Friends {
     userId String
     @@index([createdAt])
     @@map("friends")
+}
+
+model AccountSettings {
+  id String @id @default(nanoid(16))
+  userId String @unique
+  user User @relation(fields: [userId], references: [id])
+
+  birthdayNotificationTime Int?
+  timeToSendBirthdayMessages DateTime?
+  defaultMessageChannel MessageChannel? // Add Default
+  useNickNameInMessage Boolean @default(false)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("account_settings")
+}
+
+enum MessageChannel {
+  WHATSAPP
+  EMAIL
+  TEXTMESSAGE
 }
