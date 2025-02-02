@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 import config from '../config/config';
+import {createHash} from 'crypto';
 
 /**
  * PasswordHelpers Class provides utility methods for password hashing and comparison.
@@ -32,6 +33,10 @@ class HashingService {
      */
     public static async verifyHashEntity(entity: string, hashedEntity: string) {
         return await bcrypt.compare(entity, hashedEntity);
+    }
+
+    public static tokenHashManipulator(entity: string) {
+        return createHash('sha256').update(entity).digest('hex');
     }
 }
 

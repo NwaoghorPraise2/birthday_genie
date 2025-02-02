@@ -39,7 +39,7 @@ export default {
     GOOGLE_CLIENT_ID: process.env.CLIENT_ID,
     GOOGLE_CLIENT_SECRET: process.env.CLIENT_SECRET,
     GOOGLE_CALLBACK_URL: process.env.CALLBACK_URL,
-
+    OAUTH_USER_INFO_URL: process.env.OAUTH_USER_INFO_URL,
     //OPENAI
     OPEN_AI_SECRET: process.env.OPEN_AI_SECRET
 };

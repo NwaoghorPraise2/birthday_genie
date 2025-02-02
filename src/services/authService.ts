@@ -25,19 +25,24 @@ export class AuthService {
     }
 
     private static async getOAuthUserData(access_token: string) {
-        const response = await fetch(`https://www.googleapis.com/oauth2/v3/userinfo?access_token=${access_token}`); //Refactor this to ENV
+        const response = await fetch(`${config.OAUTH_USER_INFO_URL}?access_token=${access_token}`);
         const data = await response.json();
         return data;
     }
 
     public static async doUserRegistration(user: IUser) {
-        const isUserExists: unknown = await AuthRepository.getUserByEmailOrUsername(user.email, user.username);
+        const isUserExists = await AuthRepository.getUserByEmailOrUsername(user.email, user.username);
         if (isUserExists) throw new GlobalError(409, responseMessage.USER_ALREADY_EXISTS);
         const hashedPassword = await HashingService.doHashing(user.password);
+
+        const verificationToken = generateTokens.verificationToken();
+
+        const hashedVerificationToken: string = HashingService.tokenHashManipulator(verificationToken);
+
         const result = (await AuthRepository.createUser({
             ...user,
             password: hashedPassword,
-            verificationToken: generateTokens.verificationToken(),
+            verificationToken: hashedVerificationToken,
             verificationTokenExpiresAt: generateTokens.verificationTokenExpiresAt()
         })) as IUser;
         if (!result) throw new GlobalError(500, responseMessage.SOMETHING_WENT_WRONG);
@@ -47,7 +52,7 @@ export class AuthService {
         this.EmailHander.sendVerificationEmail({
             email: result?.email,
             name: result?.username,
-            verificationToken: result?.verificationToken as string
+            verificationToken: verificationToken
         });
 
         return {access_token, refresh_token, result};
@@ -71,17 +76,19 @@ export class AuthService {
     }
 
     public static async verifyEmail(token: string) {
-        const user = (await AuthRepository.getUserByVerificationToken(token)) as IUser;
+        const decodedToken: string = HashingService.tokenHashManipulator(token);
 
-        if (!user) throw new GlobalError(400, responseMessage.NOT_FOUND(`Expired Token or Verification Token`));
+        const user = await AuthRepository.getUserByVerificationToken(decodedToken);
 
-        if (user.isVerified === true) throw new GlobalError(400, responseMessage.ALREADY_VERIFIED);
+        if (!user) {
+            throw new GlobalError(400, responseMessage.NOT_FOUND(`Expired Token or Invalid Verification Token`));
+        }
 
-        user.isVerified = true;
-        user.verificationToken = undefined;
-        user.verificationTokenExpiresAt = undefined;
+        if (user.isVerified) {
+            throw new GlobalError(400, responseMessage.ALREADY_VERIFIED);
+        }
 
-        await AuthRepository.verifyUser(user.id as string, user.isVerified, user.verificationToken, user.verificationTokenExpiresAt);
+        await AuthRepository.verifyUser(user.id, true, undefined, undefined);
 
         await this.EmailHander.staticsendWelcomeEmail({
             email: user.email,
@@ -128,10 +135,13 @@ export class AuthService {
         const resetPasswordToken = generateTokens.resetPasswordToken();
         const resetPasswordTokenExpiresAt = generateTokens.resetPasswordTokenExpiresAt();
 
+        const hashedResetPasswordToken: string = HashingService.tokenHashManipulator(resetPasswordToken);
+
         const encryptedToken = EncryptService.encryptEntity(resetPasswordToken);
 
-        await AuthRepository.updateResetPasswordToken(user.id as string, resetPasswordToken, resetPasswordTokenExpiresAt);
+        await AuthRepository.updateResetPasswordToken(user.id as string, hashedResetPasswordToken, resetPasswordTokenExpiresAt);
 
+        //REFACTOR THIS URL TO RELECT THE FRONT END
         const resetLink = `${config.BASE_URL}/api/auth/reset-password?token=${encodeURIComponent(encryptedToken)}`;
 
         logger.info(`resetLink: ${resetLink}`);
@@ -145,9 +155,18 @@ export class AuthService {
     }
 
     public static async doResetPassword(token: string, newPassword: string) {
-        const decryptedToken = EncryptService.decryptEntity(decodeURIComponent(token));
+        logger.info(`token: ${token}`);
+        const decodedTokenn = decodeURIComponent(token);
 
-        const user: IUser = (await AuthRepository.getUserByResetPasswordToken(decryptedToken)) as IUser;
+        logger.info(`decodedToken: ${decodedTokenn}`);
+
+        const decryptedToken = EncryptService.decryptEntity(decodedTokenn);
+
+        logger.info(`decryptedToken: ${decryptedToken}`);
+
+        const hashDecodeToken = HashingService.tokenHashManipulator(decryptedToken);
+
+        const user: IUser = (await AuthRepository.getUserByResetPasswordToken(hashDecodeToken)) as IUser;
 
         if (!user) throw new GlobalError(400, responseMessage.NOT_FOUND(`Expired Token or Invalid Token`));
 
@@ -169,9 +188,11 @@ export class AuthService {
         if (user.isVerified === true) throw new GlobalError(400, responseMessage.ALREADY_VERIFIED);
 
         const verificationToken = generateTokens.verificationToken();
+
+        const hashedVerificationToken = HashingService.tokenHashManipulator(verificationToken);
         const verificationTokenExpiresAt = generateTokens.verificationTokenExpiresAt();
 
-        await AuthRepository.updateVerificationToken(user.id, verificationToken, verificationTokenExpiresAt);
+        await AuthRepository.updateVerificationToken(user.id, hashedVerificationToken, verificationTokenExpiresAt);
 
         this.EmailHander.sendVerificationEmail({
             email: user.email,
