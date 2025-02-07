@@ -25,14 +25,17 @@ model User {
   isVerified Boolean? @default(false)
   isBlocked Boolean? @default(false)
   resetPasswordToken String?
-	resetPasswordTokenExpiresAt DateTime?
+  resetPasswordTokenExpiresAt DateTime?
   verificationToken String?
-	verificationTokenExpiresAt DateTime?
-  lastLogin DateTime @default(now())
+  verificationTokenExpiresAt DateTime?
+  lastLogin DateTime @updatedAt
   friends Friends[]
   notifications Notifications[]
+  messages Message[]
+  histories History[]
   role Roles @default(USER)
   accountSettings AccountSettings?
+
   @@map("users")
   @@index([createdAt])
 }
@@ -43,24 +46,31 @@ enum Roles {
 }
 
 model Friends {
-    id String @id @default(nanoid(16))
-    name String
-    preferedName String
-    dateOfBirth DateTime
-    phoneNumber String?
-    whatsappNumber String? //REMOVE THIS
-    email String?
-    relationship String? // Make this in tags
-    description String?
-    createdAt   DateTime @default(now()) @map("created_at")
-    updatedAt   DateTime @updatedAt @map("updated_at")
-    isDeleted Boolean? @default(false)
+  id String @id @default(nanoid(16))
+  name String
+  preferredName String
+  dateOfBirth DateTime
+  phoneNumber String?
+  email String?
+  relationship RelationshipTag?
+  description String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  isDeleted Boolean? @default(false)
 
-    //RELATIONSHIP BETWEEN USER AND FRIENDS
-    user User @relation(fields: [userId], references: [id])
-    userId String
-    @@index([createdAt])
-    @@map("friends")
+  user User @relation(fields: [userId], references: [id])
+  userId String
+  histories History[]
+
+  @@index([createdAt])
+  @@map("friends")
+}
+
+enum RelationshipTag {
+  FAMILY
+  FRIEND
+  COLLEAGUE
+  OTHER
 }
 
 model AccountSettings {
@@ -69,8 +79,8 @@ model AccountSettings {
   user User @relation(fields: [userId], references: [id])
 
   birthdayNotificationTime Int?
-  timeToSendBirthdayMessages DateTime?
-  defaultMessageChannel MessageChannel? // Add Default
+  timeToSendBirthdayMessages Int? 
+  defaultMessageChannel MessageChannel? @default(WHATSAPP)
   useNickNameInMessage Boolean? @default(false)
 
   createdAt DateTime @default(now()) @map("created_at")
@@ -90,7 +100,7 @@ model Notifications {
   userId String
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  tag String? // Optional tag to categorize notifications
+  tag String?
   title String
   message String
   isDeleted Boolean? @default(false)
@@ -100,5 +110,57 @@ model Notifications {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("notifications")
+  @@index([createdAt])
+}
+
+model Message {
+  id String @id @default(nanoid(16))
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  status MessageStatus? @default(DRAFT)
+  message String?
+  tag MessageTag?
+  isDeleted Boolean? @default(false)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  historyId String?
+  history History? @relation(fields: [historyId], references: [id])
+
+  @@map("messages")
+  @@index([createdAt])
+}
+
+enum MessageStatus {
+  SENT
+  DRAFT
+  DELETED
+}
+
+enum MessageTag {
+  HUMAN
+  AI
+}
+
+model History {
+  id String @id @default(nanoid(16))
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  friendId String
+  friend Friends @relation(fields: [friendId], references: [id], onDelete: Cascade)
+
+  timeSent DateTime?
+  status MessageStatus @default(DRAFT)
+  channel MessageChannel @default(WHATSAPP)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  messages Message[]
+
+  @@map("history")
   @@index([createdAt])
 }
