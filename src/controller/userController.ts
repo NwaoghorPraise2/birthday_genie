@@ -21,5 +21,14 @@ export class UserController {
         const user = await UseService.doUpdateProfilePic(userId, data.profilePic as string);
         httpResponse.ok(req, res, 200, responseMessage.SUCCESS, user);
     });
+
+    public static updateUserProfile = asyncHandler.handle(async (req: Request, res: Response, _next: NextFunction) => {
+        const userId = req.user as string;
+        const data: IUser = req.body;
+        data.profilePic = req.file?.path;
+        if (!userId) return _next(new Error(responseMessage.NOT_FOUND('User')));
+        await UseService.doUpdateUserProfile(userId, data);
+        httpResponse.ok(req, res, 200, responseMessage.SUCCESS);
+    });
 }
 

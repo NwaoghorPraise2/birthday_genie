@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import {IUser} from '../types/auth.types';
 import {UserRepository} from '../repositories/userRepository';
 
 class UseService {
@@ -10,6 +9,11 @@ class UseService {
     public static async doUpdateProfilePic(id: string, profilePic: string) {
         return await UserRepository.updateProfilePic(id, profilePic);
     }
+
+    public static async doUpdateUserProfile(userId: string, data: IUser) {
+        return await UserRepository.updateUserProfile(userId, data);
+    }
 }
 
 export default UseService;
+

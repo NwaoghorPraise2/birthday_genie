@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
+import {IUser} from '@/types/auth.types';
 import db from '../config/db';
 
 export class UserRepository {
@@ -30,6 +29,23 @@ export class UserRepository {
             },
             data: {
                 profilePic: profilePic
+            }
+        });
+    }
+
+    public static async updateUserProfile(userId: string, data: IUser) {
+        return await db.user.update({
+            where: {
+                id: userId
+            },
+            data: {
+                name: data?.name,
+                username: data?.username,
+                dateOfBirth: data?.dateOfBirth,
+                description: data?.description,
+                profilePic: data?.profilePic,
+                phoneNumber: data?.phoneNumber,
+                displayName: data?.displayName
             }
         });
     }

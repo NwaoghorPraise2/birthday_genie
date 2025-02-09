@@ -9,8 +9,11 @@ export interface IUser {
     googleId?: string;
     username: string;
     email: string;
+    dateOfBirth?: Date;
     password: string;
     name?: string;
+    description?: string;
+    displayName?: string;
     phoneNumber?: string;
     profilePic?: string;
     isVerified?: boolean;

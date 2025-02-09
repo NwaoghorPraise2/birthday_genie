@@ -106,3 +106,13 @@ export const token = z.object({
     token: z.string().trim()
 });
 
+export const UpdateProfile = z.object({
+    name: z.string().trim().transform(toSentenceCase).optional(),
+    username: z.string().trim().transform(toSentenceCase).optional(),
+    dateOfBirth: z.string().trim().optional(), // set stand for date of birth.
+    description: z.string().trim().optional(),
+    phoneNumber: z.string().trim().optional(),
+    displayName: z.string().trim().optional(),
+    profilePic: z.string().trim().optional()
+});
+
