@@ -9,7 +9,7 @@ export interface IUser {
     googleId?: string;
     username: string;
     email: string;
-    dateOfBirth?: Date;
+    dateOfBirth?: string;
     password: string;
     name?: string;
     description?: string;

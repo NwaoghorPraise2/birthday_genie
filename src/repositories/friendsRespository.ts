@@ -11,17 +11,17 @@ export class FriendsRepository {
         });
     }
 
-    static async createFriends(friends: IFriend[], userId: string) {
-        const friendsWithUserId = friends.map((friend) => ({
-            ...friend,
-            userId
-        }));
+    // static async createFriends(friends: IFriend[], userId: string) {
+    //     const friendsWithUserId = friends.map((friend) => ({
+    //         ...friend,
+    //         userId
+    //     }));
 
-        return await db.friends.createMany({
-            data: friendsWithUserId,
-            skipDuplicates: true
-        });
-    }
+    //     return await db.friends.createMany({
+    //         data: friendsWithUserId,
+    //         skipDuplicates: true
+    //     });
+    // }
 
     static async getFriends(userId: string) {
         return await db.friends.findMany({
@@ -55,11 +55,14 @@ export class FriendsRepository {
         });
     }
 
-    static async deleteFriend(id: string, userId: string) {
-        return await db.friends.delete({
+    static async deleteFriend(friendId: string, userId: string, isDeleted: boolean) {
+        return await db.friends.update({
             where: {
-                id,
+                id: friendId,
                 userId
+            },
+            data: {
+                isDeleted
             }
         });
     }

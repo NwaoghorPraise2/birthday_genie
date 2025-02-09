@@ -10,18 +10,19 @@ export class FriendController {
     public static createFriend = asyncHandler.handle(async (req: Request, res: Response, _next: NextFunction) => {
         const userId = req.user;
         const friend = req.body as IFriend;
+        friend.profiePic = req.file?.path;
         if (!userId) return _next(new GlobalError(400, responseMessage.NOT_FOUND('User')));
-        const createdfriend = await FriendService.doCreateFriend(friend, userId as string);
-        return httpResponse.ok(req, res, 201, responseMessage.SUCCESS, createdfriend);
+        const createFriend = await FriendService.doCreateFriend(friend, userId as string);
+        return httpResponse.ok(req, res, 201, responseMessage.SUCCESS, createFriend);
     });
 
-    public static createFriends = asyncHandler.handle(async (req: Request, res: Response, _next: NextFunction) => {
-        const userId = req.user;
-        const friends = req.body as IFriend[];
-        if (!userId) return _next(new GlobalError(400, responseMessage.NOT_FOUND('User')));
-        const createdfriends = await FriendService.doCreateFriends(friends, userId as string);
-        return httpResponse.ok(req, res, 201, responseMessage.SUCCESS, createdfriends);
-    });
+    // public static createFriends = asyncHandler.handle(async (req: Request, res: Response, _next: NextFunction) => {
+    //     const userId = req.user;
+    //     const friends = req.body as IFriend[];
+    //     if (!userId) return _next(new GlobalError(400, responseMessage.NOT_FOUND('User')));
+    //     const createdfriends = await FriendService.doCreateFriends(friends, userId as string);
+    //     return httpResponse.ok(req, res, 201, responseMessage.SUCCESS, createdfriends);
+    // });
 
     public static getFriends = asyncHandler.handle(async (req: Request, res: Response, _next: NextFunction) => {
         const userId = req.user;
@@ -46,7 +47,7 @@ export class FriendController {
         const updatedfriend = await FriendService.doUpdateFriend(friendId, friend, userId as string);
         return httpResponse.ok(req, res, 200, responseMessage.SUCCESS, updatedfriend);
     });
-    ///RACTOR THIS DELETE OPERATION
+
     public static deleteFriend = asyncHandler.handle(async (req: Request, res: Response, _next: NextFunction) => {
         const userId = req.user;
         const friendId = req.params.id;

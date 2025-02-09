@@ -1,18 +1,17 @@
 import {IFriend} from '../types/friends.types';
 import {FriendsRepository} from '../repositories/friendsRespository';
 export class FriendService {
-    static async doCreateFriend(friend: IFriend, userId: string) {
-        //Manipulte the date of birth to be in the format of YYYY-MM-DD
-        // Here is the isTypedArray, save date and month as string in  db, when you need to use DOB anywhere, you appeend the current year... Even when responding in json. Write a untility to manipute date of birth everywhere.
+    //Todo here: Ensure that userId and FriendId exsit before using for operations
 
+    static async doCreateFriend(friend: IFriend, userId: string) {
         const createdfriend = await FriendsRepository.createFriend(friend, userId);
         return createdfriend;
     }
 
-    static async doCreateFriends(friends: IFriend[], userId: string) {
-        const createdfriends = await FriendsRepository.createFriends(friends, userId);
-        return createdfriends;
-    }
+    // static async doCreateFriends(friends: IFriend[], userId: string) {
+    //     const createdfriends = await FriendsRepository.createFriends(friends, userId);
+    //     return createdfriends;
+    // }
 
     static async doGetFriends(userId: string) {
         const friends = await FriendsRepository.getFriends(userId);
@@ -29,9 +28,8 @@ export class FriendService {
         return friend;
     }
 
-    static async doDeleteFriend(id: string, userId: string) {
-        const deletedfriend = await FriendsRepository.deleteFriend(id, userId);
-        return deletedfriend;
+    static async doDeleteFriend(friendId: string, userId: string) {
+        await FriendsRepository.deleteFriend(friendId, userId, true);
     }
 }
 

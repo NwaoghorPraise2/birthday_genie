@@ -1,11 +1,12 @@
 export interface IFriend {
     id?: string;
-    name: string;
-    preferedName: string;
-    dateOfBirth: Date;
+    name?: string;
+    preferredName?: string;
+    dateOfBirth?: string;
     phoneNumber?: string;
-    whatsappNumber?: string; //REMOVE THIS LATER
+    profiePic?: string;
     email?: string;
     relationship?: string;
     description?: string;
 }
+

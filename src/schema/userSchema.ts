@@ -1,8 +1,17 @@
 import * as z from 'zod';
 
-const toSentenceCase = (str: string) => {
+export const toSentenceCase = (str: string) => {
     if (!str) return str;
     return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+};
+
+export const formatDate = (isoString: string): string => {
+    const date = new Date(isoString);
+    if (isNaN(date.getTime())) throw new Error('Invalid date format');
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
 };
 
 export const User = z.object({
@@ -109,7 +118,11 @@ export const token = z.object({
 export const UpdateProfile = z.object({
     name: z.string().trim().transform(toSentenceCase).optional(),
     username: z.string().trim().transform(toSentenceCase).optional(),
-    dateOfBirth: z.string().trim().optional(), // set stand for date of birth.
+    dateOfBirth: z
+        .string()
+        .trim()
+        .optional()
+        .transform((val) => (val ? formatDate(val) : val)), // Convert to dd-mm-yyyy
     description: z.string().trim().optional(),
     phoneNumber: z.string().trim().optional(),
     displayName: z.string().trim().optional(),
