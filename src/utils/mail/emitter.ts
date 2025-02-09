@@ -29,12 +29,12 @@ export default class EmailEmitter {
         logger.info(`Welcome email successfully sent to ${data.email}`);
     };
 
-    public sendResetPasswordEmail = (data: {email: string; name: string; resetToken: string}) => {
-        const emailContent = PASSWORD_RESET_REQUEST_TEMPLATE.replace('{resetURL}', data.resetToken).replace('{name}', data.name);
+    public sendResetPasswordEmail = (data: {email: string; name: string; resetURL: string}) => {
+        const emailContent = PASSWORD_RESET_REQUEST_TEMPLATE.replace('{resetURL}', data.resetURL).replace('{name}', data.name);
 
         this.EmailServices.sendHTMLEmail({
             email: data.email,
-            subject: `Reset your password: ${data.resetToken} `,
+            subject: `Reset your password`,
             content: emailContent,
             category: 'Reset Password'
         });
