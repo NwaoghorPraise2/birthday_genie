@@ -49,5 +49,102 @@ export class UserRepository {
             }
         });
     }
+
+    public static async getUserProfile(userId: string) {
+        return await db.user.findUnique({
+            where: {
+                id: userId
+            },
+            select: {
+                id: true,
+                name: true,
+                username: true,
+                dateOfBirth: true,
+                description: true,
+                profilePic: true,
+                phoneNumber: true,
+                displayName: true,
+                accountSettings: {
+                    select: {
+                        birthdayNotificationTime: true,
+                        timeToSendBirthdayMessages: true,
+                        defaultMessageChannel: true,
+                        useNickNameInMessage: true
+                    }
+                },
+                friends: {
+                    select: {
+                        id: true,
+                        name: true,
+                        preferredName: true,
+                        dateOfBirth: true,
+                        phoneNumber: true,
+                        profilePic: true,
+                        email: true,
+                        relationship: true,
+                        description: true
+                    }
+                },
+                notifications: {
+                    select: {
+                        id: true,
+                        tag: true,
+                        title: true,
+                        message: true,
+                        isDeleted: true,
+                        isRead: true,
+                        createdAt: true,
+                        updatedAt: true
+                    }
+                },
+                messages: {
+                    select: {
+                        id: true,
+                        status: true,
+                        message: true,
+                        tag: true,
+                        isDeleted: true,
+                        createdAt: true,
+                        updatedAt: true
+                    }
+                },
+                histories: {
+                    select: {
+                        id: true,
+                        friendId: true,
+                        timeSent: true,
+                        status: true,
+                        channel: true,
+                        createdAt: true,
+                        updatedAt: true,
+                        friend: {
+                            select: {
+                                id: true,
+                                name: true,
+                                preferredName: true,
+                                dateOfBirth: true,
+                                phoneNumber: true,
+                                profilePic: true,
+                                email: true,
+                                relationship: true,
+                                description: true
+                            }
+                        },
+                        messages: {
+                            select: {
+                                id: true,
+                                status: true,
+                                message: true,
+                                tag: true,
+                                isDeleted: true,
+                                createdAt: true,
+                                updatedAt: true
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
 }
 

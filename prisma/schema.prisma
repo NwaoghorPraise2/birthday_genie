@@ -51,7 +51,7 @@ model Friends {
   preferredName String?
   dateOfBirth String?
   phoneNumber String?
-  profiePic String?
+  profilePic String?
   email String?
   relationship String?
   description String?
@@ -160,3 +160,4 @@ model History {
   @@map("history")
   @@index([createdAt])
 }
+

@@ -30,5 +30,12 @@ export class UserController {
         await UseService.doUpdateUserProfile(userId, data);
         httpResponse.ok(req, res, 200, responseMessage.SUCCESS);
     });
+
+    public static getUserProfile = asyncHandler.handle(async (req: Request, res: Response, _next: NextFunction) => {
+        const userId = req.user as string;
+        if (!userId) return _next(new Error(responseMessage.NOT_FOUND('User')));
+        const data = await UseService.doGetUserProfile(userId);
+        httpResponse.ok(req, res, 200, responseMessage.SUCCESS, data);
+    });
 }
 

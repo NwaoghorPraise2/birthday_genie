@@ -6,12 +6,16 @@ class UseService {
         return await UserRepository.getAllUser();
     }
 
-    public static async doUpdateProfilePic(id: string, profilePic: string) {
-        return await UserRepository.updateProfilePic(id, profilePic);
+    public static async doUpdateProfilePic(userId: string, profilePic: string) {
+        return await UserRepository.updateProfilePic(userId, profilePic);
     }
 
     public static async doUpdateUserProfile(userId: string, data: IUser) {
         return await UserRepository.updateUserProfile(userId, data);
+    }
+
+    public static async doGetUserProfile(userId: string) {
+        return await UserRepository.getUserProfile(userId);
     }
 }
 

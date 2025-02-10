@@ -23,6 +23,7 @@ class UserRouter {
             singleUpload,
             UserController.updateUserProfile
         );
+        this.router.get('/profile', UserController.getUserProfile);
     }
 }
 
