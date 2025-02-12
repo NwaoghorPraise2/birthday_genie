@@ -1,10 +1,22 @@
 import db from '../config/db';
 import {INotification} from '../types/notifications.types';
-import {IUser} from '../types/auth.types';
 
-class NotificationRepository {
-    public static async createNotification(notification: INotification, userId: string) {}
+export default class NotificationRepository {
+    public static async createNotification(notification: INotification, userId: string) {
+        return await db.notifications.create({
+            data: {
+                ...notification,
+                userId
+            }
+        });
+    }
 
-    public static async getNotificationsByUserId() {}
+    public static async getNotificationsByUserId(userId: string) {
+        return await db.notifications.findMany({
+            where: {
+                userId
+            }
+        });
+    }
 }
 

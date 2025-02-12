@@ -5,6 +5,7 @@ import responseMessage from '../constant/responseMessage';
 import {FriendService} from '../services/friendsService';
 import {IFriend} from '../types/friends.types';
 import httpResponse from '../dto/httpResponse';
+// import NotificationService from '../services/notificationService';
 
 export class FriendController {
     public static createFriend = asyncHandler.handle(async (req: Request, res: Response, _next: NextFunction) => {
@@ -13,6 +14,11 @@ export class FriendController {
         friend.profiePic = req.file?.path;
         if (!userId) return _next(new GlobalError(400, responseMessage.NOT_FOUND('User')));
         const createFriend = await FriendService.doCreateFriend(friend, userId as string);
+        // await notificationService.sendNotification(userId as string, {
+        //     message: `You have a new friend ${friend.name}`,
+        //     type: 'friend',
+        //     status: 'unread'
+        // });
         return httpResponse.ok(req, res, 201, responseMessage.SUCCESS, createFriend);
     });
 
