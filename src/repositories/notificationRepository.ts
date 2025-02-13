@@ -18,5 +18,27 @@ export default class NotificationRepository {
             }
         });
     }
+
+    public static async markNotificationAsRead(notificationId: string) {
+        return await db.notifications.update({
+            where: {
+                id: notificationId
+            },
+            data: {
+                isRead: true
+            }
+        });
+    }
+
+    public static async deleteNotification(notificationId: string) {
+        return await db.notifications.update({
+            where: {
+                id: notificationId
+            },
+            data: {
+                isDeleted: true
+            }
+        });
+    }
 }
 

@@ -3,6 +3,7 @@ import apiController from '../controller/apiController';
 import authRoutes from './authRoute';
 import userRoutes from './userRoute';
 import friendsRoute from './friendsRoute';
+import notificationRoute from './notificationRoute';
 import Auth from '../middlewares/authMiddleware';
 
 /**
@@ -73,6 +74,7 @@ class AppRouter {
         this.router.use('/auth', authRoutes);
         this.router.use('/user', userRoutes);
         this.router.use('/friends', friendsRoute);
+        this.router.use('/notifications', notificationRoute);
     }
 }
 
