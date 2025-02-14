@@ -15,14 +15,14 @@ class NotificationRouter {
 
     private run(): void {
         this.router.post(
-            'send-notification',
+            '/send-notification',
             Auth.authenticate,
             Validator.validateRequest({body: Notification}),
             NotificationController.sendNotification
         );
-        this.router.get('get-notifications', Auth.authenticate, NotificationController.getNotifications);
+        this.router.get('/get-notifications', Auth.authenticate, NotificationController.getNotifications);
         this.router.put(
-            'mark-notification-as-read/:id',
+            '/mark-notification-as-read/:id',
             Auth.authenticate,
             Validator.validateRequest({
                 params: object({
@@ -33,7 +33,7 @@ class NotificationRouter {
         );
 
         this.router.put(
-            'delete-notification/:id',
+            '/delete-notification/:id',
             Auth.authenticate,
             Validator.validateRequest({
                 params: object({

@@ -14,10 +14,10 @@ class FriendsRouter {
     }
 
     private run(): void {
-        this.router.post('add-friend', Auth.authenticate, Validator.validateRequest({body: Friend}), FriendController.createFriend);
-        this.router.get('get-friends', Auth.authenticate, FriendController.getFriends);
+        this.router.post('/add-friend', Auth.authenticate, Validator.validateRequest({body: Friend}), FriendController.createFriend);
+        this.router.get('/get-friends', Auth.authenticate, FriendController.getFriends);
         this.router.put(
-            'update-friend/:id',
+            '/update-friend/:id',
             Auth.authenticate,
             Validator.validateRequest({
                 body: Friend,
@@ -28,7 +28,7 @@ class FriendsRouter {
             FriendController.updateFriend
         );
         this.router.get(
-            'get-friend/:id',
+            '/get-friend/:id',
             Auth.authenticate,
             Validator.validateRequest({
                 params: object({
@@ -39,7 +39,7 @@ class FriendsRouter {
         );
 
         this.router.put(
-            'delete-friend/:id',
+            '/delete-friend/:id',
             Auth.authenticate,
             Validator.validateRequest({
                 params: object({

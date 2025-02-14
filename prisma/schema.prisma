@@ -34,7 +34,7 @@ model User {
   messages Message[]
   histories History[]
   role Roles @default(USER)
-  accountSettings AccountSettings?
+  accountSettings AccountSettings[]
 
   @@map("users")
   @@index([createdAt])

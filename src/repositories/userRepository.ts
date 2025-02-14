@@ -66,6 +66,8 @@ export class UserRepository {
                 displayName: true,
                 accountSettings: {
                     select: {
+                        id: true,
+                        userId: true,
                         birthdayNotificationTime: true,
                         timeToSendBirthdayMessages: true,
                         defaultMessageChannel: true,
