@@ -6,18 +6,20 @@ export default interface IMessage {
     tag?: MessageTag;
     isDeleted?: boolean;
     historyId?: string;
-    createdAt: Date;
-    updatedAt: Date;
+}
+
+export interface Prompt {
+    prompt: string;
 }
 
 export enum MessageStatus {
-    SENT = 'sent',
-    DELETED = 'deleted',
-    DRAFT = 'draft'
+    SENT = 'SENT',
+    DELETED = 'DELETED',
+    DRAFT = 'DRAFT'
 }
 
 export enum MessageTag {
-    HUMAN = 'human',
-    AI = 'ai'
+    HUMAN = 'HUMAN',
+    AI = 'AI'
 }
 

@@ -4,6 +4,7 @@ import authRoutes from './authRoute';
 import userRoutes from './userRoute';
 import friendsRoute from './friendsRoute';
 import notificationRoute from './notificationRoute';
+import messageRoute from './messageRoute';
 import Auth from '../middlewares/authMiddleware';
 
 /**
@@ -75,6 +76,7 @@ class AppRouter {
         this.router.use('/user', userRoutes);
         this.router.use('/friends', friendsRoute);
         this.router.use('/notifications', notificationRoute);
+        this.router.use('/messages', messageRoute);
     }
 }
 
