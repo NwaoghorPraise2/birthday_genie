@@ -10,7 +10,7 @@ class MessageRouter {
     }
 
     private run(): void {
-        this.router.get('/generate-message', MessageController.generateMessage);
+        this.router.post('/generate-message', MessageController.generateMessage);
     }
 }
 export default new MessageRouter().router;
