@@ -1,15 +1,29 @@
-import {IFriend} from '@/types/friends.types';
-import {FriendsRepository} from '../repositories/friendsRespository';
-export class CalenderService {
-    static async doSubscribeToCalender(userId: string, useTimeZone: string) {
-        const friend = (await FriendsRepository.getFriends(userId)) as IFriend[];
+import IcsEventHandler from '../utils/icsEventHandler';
 
-        const friendsDetails = friend.map((friend) => {
-            return {
-                name: friend.name,
-                dateOfBirth: friend.dateOfBirth
-            };
-        });
+export default class CalenderService {
+    static async doSubscribeToCalender(userId: string) {
+        // This is a dummy code snippet. Replace this with your actual code.
+        // const user = await IcsEventHandler.createEvent({
+        //     title: 'Birthday',
+        //     description: 'Birthday of user',
+        //     start: new Date(),
+        //     end: new Date(),
+        //     location: 'Home',
+        //     url: 'XXXXXXXXXXXXXXXXXXXXXX',
+        //     organizer: {
+        //         name: 'John Doe',
+        //         email: 'john.doe@example.com'
+        //     },
+        //     attendees: [
+        //         {
+        //             name: 'John Doe',
+        //             email: 'john.doe@example.com',
+        //             rsvp: true,
+        //             partstat: 'ACCEPTED',
+        //             role: 'REQ-PARTICIPANT'
+        //         }
+        //     ]
+        // });
     }
 }
 
