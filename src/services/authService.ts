@@ -150,7 +150,7 @@ export class AuthService {
         this.EmailHander.sendResetPasswordEmail({
             email: user.email,
             name: user.username,
-            resetToken: resetLink
+            resetURL: resetLink
         });
     }
 
