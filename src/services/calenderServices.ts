@@ -1,41 +1,43 @@
-import CalenderRepository from '../repositories/calenderRepository';
-import IcsEventHandler from '../utils/icsEventHandler';
+// import CalenderRepository from '../repositories/calenderRepository';
+// import IcsService from './icsServices';
+// import {EventList} from '../types/calender.types';
 
-export default class CalenderService {
-    static async doSubscribeToCalender(userId: string) {
-        const bithdays = await CalenderRepository.getUserAndFriendsBirthdays(userId);
+// export default class CalenderService {
+//     static async doSubscribeToCalender(userId: string) {
+//         const data = await CalenderRepository.getUserAndFriendsBirthdays(userId);
 
-        // 1. Find user by userId
-        // 2. Get user email
-        // 3. get user date of birth
-        // 4. get birthdays of all friends assointed to user
-        // 5. create a birthdday object for all the birthdays
-        // 6. create a event for all birthdays
-        // 7. subscribe to calender
-        // 8. return success message
+//         if (!data) {
+//             throw new Error('User data not found');
+//         }
 
-        // This is a dummy code snippet. Replace this with your actual code.
-        // const user = await IcsEventHandler.createEvent({
-        //     title: 'Birthday',
-        //     description: 'Birthday of user',
-        //     start: new Date(),
-        //     end: new Date(),
-        //     location: 'Home',
-        //     url: 'XXXXXXXXXXXXXXXXXXXXXX',
-        //     organizer: {
-        //         name: 'John Doe',
-        //         email: 'john.doe@example.com'
-        //     },
-        //     attendees: [
-        //         {
-        //             name: 'John Doe',
-        //             email: 'john.doe@example.com',
-        //             rsvp: true,
-        //             partstat: 'ACCEPTED',
-        //             role: 'REQ-PARTICIPANT'
-        //         }
-        //     ]
-        // });
-    }
-}
+//         const event: = [
+//             {
+//                 id: data.id,
+//                 name: data.name,
+//                 username: data.username,
+//                 dateOfBirth: data.dateOfBirth,
+//                 // description: data.description,
+//                 phoneNumber: data.phoneNumber,
+//                 displayName: data.displayName
+//             },
+//             {
+//                 ...data.friends.map((friend) => ({
+//                     id: friend.id,
+//                     name: friend.name,
+//                     preferredName: friend.preferredName,
+//                     dateOfBirth: friend.dateOfBirth,
+//                     phoneNumber: friend.phoneNumber,
+//                     profilePic: friend.profilePic,
+//                     email: friend.email,
+
+//                     relationship: friend.relationship,
+//                     description: friend.description
+//                 }))
+//             }
+//         ] as Event[];
+
+//         const icsData = IcsService.createEvent(event);
+//         return icsData;
+//     }
+// }
 
