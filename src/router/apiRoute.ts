@@ -6,6 +6,7 @@ import friendsRoute from './friendsRoute';
 import notificationRoute from './notificationRoute';
 import messageRoute from './messageRoute';
 import Auth from '../middlewares/authMiddleware';
+import calenderRoute from './calenderRoute';
 
 /**
  * AppRouter Class - Manages and defines the routes for the application.
@@ -77,6 +78,7 @@ class AppRouter {
         this.router.use('/friends', friendsRoute);
         this.router.use('/notifications', notificationRoute);
         this.router.use('/messages', messageRoute);
+        this.router.use('/calender', calenderRoute);
     }
 }
 
