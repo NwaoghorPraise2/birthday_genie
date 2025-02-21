@@ -1,20 +1,25 @@
 import logger from '../utils/logger';
 import IcsEventHandler from '../utils/ics/icsEventHandler';
 import {EventAttributes} from 'ics';
-import {EventList} from '../types/calender.types';
+import {Event} from '../types/calender.types';
 
 export default class IcsService {
-    public static async createEvent(eventList: EventList) {
-        const formattedEvents = eventList.events.map((event) => ({
+    public static async createEvent(eventList: Event[]): Promise<string> {
+        if (eventList.length === 0) {
+            throw new Error('No events provided to create ICS.');
+        }
+
+        const formattedEvents: EventAttributes = {
             title: 'Birthdays from Birthday-Genie',
-            start: IcsService.formatDateForICS(event.dateOfBirth),
-            description: event.description || 'No description provided',
-            categories: event.relationship,
+            start: IcsService.formatDateForICS(eventList[0].dateOfBirth),
+            description: eventList[0].description || 'No description provided',
+            categories: [eventList[0].relationship],
             organizer: {
                 name: 'Birthday-Genie',
                 email: 'support@automusstech.com'
-            }
-        })) as unknown as EventAttributes;
+            },
+            duration: {hours: 24}
+        };
 
         try {
             const icsContent = await IcsEventHandler.createEvent(formattedEvents);
@@ -25,7 +30,7 @@ export default class IcsService {
         }
     }
 
-    public static formatDateForICS(dob: string) {
+    public static formatDateForICS(dob: string): [number, number, number] {
         const [day, month, year] = dob.split('-').map(Number);
         return [year, month, day];
     }
