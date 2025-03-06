@@ -1,42 +1,52 @@
-import CalenderRepository from '../repositories/calenderRepository';
-import IcsService from './icsServices';
-import {Event} from '../types/calender.types';
+import CalendarRepository from '../repositories/calenderRepository';
+import IcsService from '../utils/ics/generateICS';
+import {CalendarEvent} from '../types/calender.types';
+import logger from '../utils/logger';
+import IcsEventHandler from '../utils/ics/icsEventHandler';
 
-export default class CalenderService {
-    static async doSubscribeToCalender(userId: string): Promise<string> {
-        const data = await CalenderRepository.getUserAndFriendsBirthdays(userId);
+export default class CalendarService {
+    static async doSubscribeToCalendar(userId: string) {
+        const userData = await CalendarRepository.getUserAndFriendsBirthdays(userId);
 
-        if (!data) {
-            throw new Error('User data not found');
+        if (!userData) {
+            logger.warn(`No user found with ID: ${userId}`);
+            throw new Error('User not found');
         }
 
-        // Ensure correct array structure
-        const eventList: Event[] = [
-            {
-                id: data.id,
-                name: data.name ?? '',
-                username: data.username,
-                dateOfBirth: data.dateOfBirth ?? '',
-                description: data.description ?? '',
-                phoneNumber: data.phoneNumber ?? undefined,
-                displayName: data.displayName ?? undefined,
-                relationship: 'Self' // Default for the user
-            },
-            ...data.friends.map((friend) => ({
-                id: friend.id,
-                name: friend.name ?? '',
-                preferredName: friend.preferredName ?? '',
-                dateOfBirth: friend.dateOfBirth ?? '',
-                phoneNumber: friend.phoneNumber ?? '',
-                profilePic: friend.profilePic ?? '',
-                email: friend.email ?? '',
-                relationship: friend.relationship ?? '',
-                description: friend.description ?? ''
-            }))
-        ];
+        const Events: CalendarEvent[] = [];
 
-        const icsData = await IcsService.createEvent(eventList);
-        return icsData;
+        if (userData.dateOfBirth) {
+            const personalBirthday = IcsEventHandler.createBirthdayEvents(
+                {
+                    id: userData.id,
+                    name: userData.name,
+                    preferredName: userData.displayName || userData.name,
+                    dateOfBirth: userData.dateOfBirth
+                },
+                'personal'
+            );
+            if (personalBirthday) {
+                Events.push(personalBirthday);
+            }
+        }
+
+        userData.friends.forEach((friend) => {
+            if (friend.dateOfBirth) {
+                const friendBirthday = IcsEventHandler.createBirthdayEvents(
+                    {
+                        id: friend.id,
+                        name: friend.name,
+                        preferredName: friend.preferredName || friend.name,
+                        dateOfBirth: friend.dateOfBirth
+                    },
+                    'friend'
+                );
+                if (friendBirthday) {
+                    Events.push(friendBirthday);
+                }
+            }
+        });
+        return IcsService.generateICS(Events);
     }
 }
 

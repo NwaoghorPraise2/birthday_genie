@@ -1,0 +1,188 @@
+import { Prisma } from '@prisma/client';
+import { format, parseISO } from 'date-fns';
+
+export interface CalendarSubscription {
+  subscriptionUrl: string;
+  subscriptionKey: string;
+  expiresAt: Date;
+}
+
+export class CalendarSubscriptionService {
+  /**
+   * Generate a unique, secure subscription key for calendar feed
+   * @param userId - User's unique identifier
+   * @returns Subscription details
+   */
+  static generateSubscriptionKey(userId: string): CalendarSubscription {
+    // Generate a cryptographically secure token
+    const subscriptionKey = this.generateSecureToken();
+    
+    return {
+      subscriptionKey,
+      subscriptionUrl: `/api/calendar/feed/${subscriptionKey}`,
+      expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000) // 1 year expiration
+    };
+  }
+
+  /**
+   * Validate and retrieve user data for a subscription key
+   * @param subscriptionKey - Unique subscription identifier
+   * @returns User data or null if invalid
+   */
+  static async validateSubscriptionKey(subscriptionKey: string) {
+    // In a real implementation, this would query a persistent storage
+    const userSubscription = await db.calendarSubscription.findUnique({
+      where: { 
+        subscriptionKey,
+        expiresAt: { gt: new Date() } 
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            dateOfBirth: true,
+            friends: {
+              select: {
+                id: true,
+                name: true,
+                dateOfBirth: true,
+                email: true,
+                relationship: true
+              }
+            }
+          }
+        }
+      }
+    });
+
+    return userSubscription?.user || null;
+  }
+
+  /**
+   * Generate a cryptographically secure token
+   * @returns Secure random token
+   */
+  private static generateSecureToken(): string {
+    return crypto.randomBytes(32).toString('hex');
+  }
+}
+
+// Route Handler
+export class CalendarFeedController {
+  /**
+   * Generate a unique calendar subscription for the user
+   */
+  static async generateSubscription(req: Request, res: Response) {
+    try {
+      const userId = req.user?.id;
+
+      if (!userId) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+
+      // Create or retrieve existing subscription
+      const subscription = await db.calendarSubscription.upsert({
+        where: { userId },
+        update: {},
+        create: {
+          userId,
+          subscriptionKey: CalendarSubscriptionService.generateSecureToken(),
+          expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
+        },
+        select: {
+          subscriptionKey: true,
+          expiresAt: true
+        }
+      });
+
+      res.json({
+        subscriptionUrl: `/api/calendar/feed/${subscription.subscriptionKey}`,
+        expiresAt: subscription.expiresAt
+      });
+    } catch (error) {
+      console.error('Subscription generation error:', error);
+      res.status(500).json({ error: 'Failed to generate calendar subscription' });
+    }
+  }
+
+  /**
+   * Provide iCal feed for a valid subscription key
+   */
+  static async getCalendarFeed(req: Request, res: Response) {
+    try {
+      const { subscriptionKey } = req.params;
+
+      // Validate subscription and get user data
+      const userData = await CalendarSubscriptionService.validateSubscriptionKey(subscriptionKey);
+
+      if (!userData) {
+        return res.status(404).json({ error: 'Invalid or expired subscription' });
+      }
+
+      // Transform user and friends data to birthday events
+      const birthdayEvents = BirthdayService.transformToCalendarEvents(userData);
+
+      // Generate iCal content
+      const icalContent = CalendarExportUtility.generateICalendar(birthdayEvents);
+
+      // Set headers for dynamic calendar feed
+      res.setHeader('Content-Type', 'text/calendar');
+      res.setHeader('Cache-Control', 'no-cache');
+      res.send(icalContent);
+    } catch (error) {
+      console.error('Calendar feed error:', error);
+      res.status(500).json({ error: 'Failed to generate calendar feed' });
+    }
+  }
+}
+
+// Express Router
+import express from 'express';
+const router = express.Router();
+
+router.get('/calendar/subscription', CalendarFeedController.generateSubscription);
+router.get('/calendar/feed/:subscriptionKey', CalendarFeedController.getCalendarFeed);
+
+export default router;
+```
+
+I've enhanced the implementation with a robust calendar subscription mechanism:
+
+1. **Subscription Generation**:
+   - Users can generate a unique, secure subscription URL
+   - Subscription is valid for one year
+   - Generates a cryptographically secure token
+
+2. **Calendar Feed Endpoint**:
+   - Dynamic iCal feed accessible via a unique subscription key
+   - Includes both user's and friends' birthdays
+   - Supports automatic updates without regenerating the URL
+
+3. **User Experience**:
+   - Single endpoint to generate a subscription
+   - Easy copy-paste of subscription URL into calendar apps
+
+Usage Workflow:
+1. User generates subscription:
+```typescript
+// Frontend call
+const response = await fetch('/api/calendar/subscription');
+const { subscriptionUrl } = await response.json();
+
+// User copies this URL into their calendar app
+// e.g., Apple Calendar, Google Calendar, Outlook
+```
+
+2. Calendar App Configuration:
+- Users can add the subscription URL directly in their calendar app
+- The feed will automatically update with birthdays
+- Supports most major calendar applications
+
+Key Improvements:
+- Secure token generation
+- Persistent subscription storage
+- One-year validity period
+- Easy integration with calendar apps
+
+Would you like me to elaborate on any aspect of the calendar subscription implementation?
