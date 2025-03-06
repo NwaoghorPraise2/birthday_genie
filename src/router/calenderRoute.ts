@@ -1,7 +1,6 @@
 import {Router} from 'express';
 import CalanederComtroller from '../controller/calenderController';
-import Validator from '../middlewares/validator';
-import {object, string} from 'zod';
+import Auth from '../middlewares/authMiddleware';
 
 class CalenderRouter {
     public router: Router = Router();
@@ -12,15 +11,7 @@ class CalenderRouter {
     }
 
     private run(): void {
-        this.router.get(
-            '/subcribe-to-calender/:userId',
-            Validator.validateRequest({
-                params: object({
-                    userId: string()
-                })
-            }),
-            CalanederComtroller.subscribeToCalender
-        );
+        this.router.get('/subcribe-to-calender', Auth.authenticate, CalanederComtroller.subscribeToCalender);
     }
 }
 export default new CalenderRouter().router;

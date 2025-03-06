@@ -7,13 +7,14 @@ import logger from '../utils/logger';
 
 export default class CalenderController {
     public static subscribeToCalender = asyncHandler.handle(async (req: Request, res: Response, _next: NextFunction) => {
-        const {userId} = req.params;
+        const userId = req.user;
 
         logger.info('User ID:', {userId});
 
         if (!userId) return _next(new GlobalError(400, responseMessage.NOT_FOUND('User')));
-        const icsData = await CalenderService.doSubscribeToCalendar(userId);
-        res.setHeader('Content-Type', 'text/calendar');
+        const icsData = await CalenderService.doSubscribeToCalendar(userId as string);
+        res.setHeader('Content-Type', 'text/calendar; charset=utf-8');
+        res.setHeader('Content-Disposition', 'inline; filename="birthday_calendar.ics"');
         res.status(200).send(icsData);
     });
 }

@@ -16,6 +16,20 @@ class SeedDB {
     }
 
     async seedUsers(): Promise<{id: string; username: string}[]> {
+        // Array of varied birth dates spanning different decades in DD-MM-YYYY format
+        const birthDates = [
+            '12-04-1985',
+            '23-07-1990',
+            '05-11-1978',
+            '18-02-1995',
+            '30-09-2000',
+            '15-06-1982',
+            '27-01-1993',
+            '03-12-1988',
+            '20-05-1997',
+            '11-08-1975'
+        ];
+
         const users = await Promise.all(
             Array.from({length: 10}).map(async (_, i) =>
                 db.user.create({
@@ -24,6 +38,9 @@ class SeedDB {
                         email: `user${i}@genie.com`,
                         password: await PasswordHelpers.doHashing(`UserPassss@${i}`),
                         name: `User ${i}`,
+                        displayName: `Display User ${i}`, // Added display name
+                        dateOfBirth: birthDates[i], // Now in DD-MM-YYYY format
+                        description: `This is a description for User ${i}. They joined the platform recently and enjoy using our services.`, // Added description
                         phoneNumber: `+1234567890${i}`,
                         profilePic: `https://picsum.photos/seed/user${i}/200`
                     }
@@ -35,23 +52,52 @@ class SeedDB {
     }
 
     async seedFriends(users: {id: string}[]): Promise<{id: string}[]> {
+        // Array of varied birth dates for friends in DD-MM-YYYY format
+        const friendBirthDates = [
+            '14-02-1983', // Valentine's Day 1983
+            '31-10-1992', // Halloween 1992
+            '25-12-1976', // Christmas 1976
+            '04-07-1998', // Independence Day 1998
+            '17-03-1980', // St. Patrick's Day 1980
+            '01-01-1995', // New Year's Day 1995
+            '23-11-1989', // Thanksgiving 1989
+            '05-05-2001', // Cinco de Mayo 2001
+            '22-09-1979', // Fall Equinox 1979
+            '21-06-1994', // Summer Solstice 1994
+            '01-04-1987', // April Fool's 1987
+            '02-02-1999', // Groundhog Day 1999
+            '15-08-1981', // Mid-August 1981
+            '11-11-1996', // Veterans Day 1996
+            '30-03-1986', // Easter 1986
+            '14-07-1993', // Bastille Day 1993
+            '25-05-1977', // Star Wars Day 1977
+            '11-09-2002', // September 11, 2002
+            '10-10-1984', // October 10, 1984
+            '17-01-1991' // MLK Day area 1991
+        ];
+
+        let friendIndex = 0;
         const friends = users.flatMap((user, i) =>
-            Array.from({length: 2}).map(() =>
-                db.friends.create({
+            Array.from({length: 2}).map(() => {
+                // Increment and wrap around if we exceed the array length
+                const birthDateIndex = friendIndex % friendBirthDates.length;
+                friendIndex++;
+
+                return db.friends.create({
                     data: {
                         userId: user.id,
-                        name: `Friend${i}`,
-                        preferredName: `F${i}`,
-                        dateOfBirth: '1990-01-01',
-                        phoneNumber: `+1987654321${i}`,
-                        profilePic: `https://picsum.photos/seed/friend${i}/200`,
-                        email: `friend${i}@genie.com`,
+                        name: `Friend${i}-${birthDateIndex}`,
+                        preferredName: `F${i}-${birthDateIndex}`,
+                        dateOfBirth: friendBirthDates[birthDateIndex],
+                        phoneNumber: `+1987654321${i}${birthDateIndex}`,
+                        profilePic: `https://picsum.photos/seed/friend${i}${birthDateIndex}/200`,
+                        email: `friend${i}${birthDateIndex}@genie.com`,
                         relationship: 'Friend',
-                        description: 'A close friend',
+                        description: `A close friend born on ${friendBirthDates[birthDateIndex]}`,
                         isDeleted: false
                     }
-                })
-            )
+                });
+            })
         );
         const createdFriends = await Promise.all(friends);
         logger.info('Friends seeded successfully');
@@ -159,4 +205,3 @@ if (require.main === module) {
         process.exit(0);
     });
 }
-

@@ -8,6 +8,10 @@ export default class CalendarService {
     static async doSubscribeToCalendar(userId: string) {
         const userData = await CalendarRepository.getUserAndFriendsBirthdays(userId);
 
+        logger.info('User ID:', {
+            meta: userData
+        });
+
         if (!userData) {
             logger.warn(`No user found with ID: ${userId}`);
             throw new Error('User not found');
@@ -45,6 +49,10 @@ export default class CalendarService {
                     Events.push(friendBirthday);
                 }
             }
+        });
+
+        logger.info('Events:', {
+            meta: Events
         });
         return IcsService.generateICS(Events);
     }
