@@ -41,6 +41,8 @@ export default {
     GOOGLE_CALLBACK_URL: process.env.CALLBACK_URL,
     OAUTH_USER_INFO_URL: process.env.OAUTH_USER_INFO_URL,
     //OPENAI
-    OPEN_AI_SECRET: process.env.OPEN_AI_SECRET
+    OPEN_AI_SECRET: process.env.OPEN_AI_SECRET,
+    ASSIGN_MODEL_ROLE: process.env.ASSIGN_MODEL_ROLE,
+    ASSIGN_MODEL: process.env.ASSIGN_MODEL
 };
 

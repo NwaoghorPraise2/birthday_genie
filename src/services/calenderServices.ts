@@ -5,6 +5,8 @@ import logger from '../utils/logger';
 import IcsEventHandler from '../utils/ics/icsEventHandler';
 
 export default class CalendarService {
+    //Update to get users settings and use it edit the events
+
     static async doSubscribeToCalendar(userId: string) {
         const userData = await CalendarRepository.getUserAndFriendsBirthdays(userId);
 

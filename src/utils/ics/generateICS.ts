@@ -7,8 +7,8 @@ export default class IcsService {
         const icsContent = validEvents
             .map((event) => {
                 const isAllDay = this.isAllDayEvent(event.start, event.end);
-                const dtStart = isAllDay ? this.formatDateForICSAllDay(event.start) : this.formatDateForICS(event.start);
-                const dtEnd = isAllDay ? this.formatDateForICSAllDay(this.getNextDay(event.end)) : this.formatDateForICS(event.end);
+                const dtStart = isAllDay ? this.formatDateForICSAllDay(event.start) : this.formatDateForICSLTZ(event.start);
+                const dtEnd = isAllDay ? this.formatDateForICSAllDay(this.getNextDay(event.end)) : this.formatDateForICSLTZ(event.end);
 
                 return `BEGIN:VEVENT
 UID:${event.id}-${Date.now()}
@@ -25,10 +25,23 @@ END:VEVENT`;
     }
 
     /**
-     * Format date for ICS standard (Date-time format)
+     * Format date for ICS standard (Local Time with Time Zone)
      */
-    private static formatDateForICS(date: Date): string {
-        return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+    private static formatDateForICSLTZ(date: Date): string {
+        const pad = (num: number) => String(num).padStart(2, '0');
+        const year = date.getFullYear();
+        const month = pad(date.getMonth() + 1);
+        const day = pad(date.getDate());
+        const hours = pad(date.getHours());
+        const minutes = pad(date.getMinutes());
+        const seconds = pad(date.getSeconds());
+
+        const offsetMinutes = date.getTimezoneOffset();
+        const offsetHours = Math.abs(Math.floor(offsetMinutes / 60));
+        const offsetMin = Math.abs(offsetMinutes % 60);
+        const offsetSign = offsetMinutes > 0 ? '-' : '+';
+
+        return `${year}${month}${day}T${hours}${minutes}${seconds}${offsetSign}${pad(offsetHours)}${pad(offsetMin)}`;
     }
 
     /**
