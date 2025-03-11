@@ -43,6 +43,11 @@ export default {
     //OPENAI
     OPEN_AI_SECRET: process.env.OPEN_AI_SECRET,
     ASSIGN_MODEL_ROLE: process.env.ASSIGN_MODEL_ROLE,
-    ASSIGN_MODEL: process.env.ASSIGN_MODEL
+    ASSIGN_MODEL: process.env.ASSIGN_MODEL,
+
+    //TWILIO
+    TWILIO_ACCOUNT_SID: process.env.TWILIO_ACCOUNT_SID,
+    TWILIO_AUTH_TOKEN: process.env.TWILIO_AUTH_TOKEN,
+    TWILIO_PHONE_NUMBER: process.env.TWILIO_PHONE_NUMBER
 };
 
