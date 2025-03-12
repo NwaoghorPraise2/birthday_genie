@@ -13,3 +13,18 @@ export const Friend = z.object({
     isDeleted: z.boolean().optional()
 });
 
+export const UpdateFriend = z.object({
+    name: z.string().transform(toSentenceCase).optional(),
+    preferredName: z.string().transform(toSentenceCase).optional(),
+    dateOfBirth: z
+        .string()
+        .transform((val) => (val ? formatDate(val) : val))
+        .optional(),
+    phoneNumber: z.string().optional(),
+    profiePic: z.string().optional(),
+    email: z.string().email().optional(),
+    relationship: z.string().transform(toSentenceCase).optional(),
+    description: z.string().transform(toSentenceCase).optional(),
+    isDeleted: z.boolean().optional()
+});
+

@@ -17,8 +17,12 @@ export class UserController {
         const userId = req.user as string;
         const data: IUser = req.body;
         data.profilePic = req.file?.path;
+
         if (!userId) return _next(new Error(responseMessage.NOT_FOUND('User')));
-        const user = await UseService.doUpdateProfilePic(userId, data.profilePic as string);
+
+        if (!data.profilePic) return _next(new Error(responseMessage.NOT_FOUND('Profile Pic')));
+
+        const user = await UseService.doUpdateProfilePic(userId, data.profilePic);
         httpResponse.ok(req, res, 200, responseMessage.SUCCESS, user);
     });
 
